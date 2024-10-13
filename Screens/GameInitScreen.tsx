@@ -17,7 +17,11 @@ import { Picker } from '@react-native-picker/picker'; // Import Picker from the 
 
 import GameButton from '../Components/Button';
 import HorizontalListOption from '../Components/HorizontalListOption';
-import { Alert } from '../node_modules/react-native/types/index';
+
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
 
 function GameInitScreen({ navigation }) {
     const [playersCount, setPlayersCount] = useState(0);
@@ -54,7 +58,7 @@ function GameInitScreen({ navigation }) {
                 <View style={styles.row}>
                     <FontAwesomeIcon icon={faCircle} size={16} color="#C1121F" />
                     <Text style={styles.h2}>Αριθμός Γύρων</Text></View>
-                <HorizontalListOption options={[3, 5, 10, 15]} callBack={callbackRoundsCount} />
+                <HorizontalListOption options={[1, 3, 5, 10, 15]} callBack={callbackRoundsCount} />
             </View>
 
             <View style={styles.list}>
@@ -90,46 +94,43 @@ function GameInitScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        rowGap: 24,
-        paddingHorizontal: 8,
-        height: '100%',
-        width: '100%',
+        rowGap: hp('5%'),
+        height: hp('100%'),
+        width: wp('100%'),
         flex: 1,
         alignItems: 'center',
 
     },
     h1: {
         fontWeight: 'bold',
-        fontSize: 20,
-        marginTop: 16,
+        fontSize: hp('3%'),
+        marginTop: hp('2%'),
         textAlign: 'center', // Ensure title is centered
     },
     h2: {
-        fontSize: 16,
+        fontSize: hp('2%'),
     },
     list: {
-        paddingVertical: 0,
-        paddingHorizontal: 0,
         alignItems: 'center',
-        rowGap: 4,
+        rowGap: hp('1%'),
     },
     btn: {
         backgroundColor: '#C1121F',
-        paddingHorizontal: 40,
-        paddingVertical: 10,
-        borderRadius: 5,
+        paddingVertical: hp('1.5%'),
+        borderRadius: hp('20%'),
         marginTop: 'auto',
-        marginBottom: 16,
-        alignItems: 'center'
+        marginBottom: hp('2%'),
+        alignItems: 'center',
+        width: wp('90%')
     },
     closeButtonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: hp('2%'),
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        columnGap: 8,
+        columnGap: wp('3%'),
     }
 });
 

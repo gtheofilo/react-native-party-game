@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import AwaitsTapModal from "../Components/AwaitsTapModal";
 import GameButton from "../Components/Button";
 import FullScreenModal from "../Components/FullScreenModal";
@@ -8,7 +8,11 @@ import { faHourglass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Sound from 'react-native-sound';
 import StatsModal from "../Components/StatsModal";
-
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+   } from 'react-native-responsive-screen'
+   
 // Enable playback in silent mode (iOS only)
 Sound.setCategory('Playback');
 
@@ -45,30 +49,36 @@ function GameScreen({ route }) {
     const [timeLeft, setTimeLeft] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [statsModalVisible, setStatsModalVisible] = useState(false);
-
     const [categoryName, setCategoryName] = useState(false);
     const [challenge, setChallenge] = useState(false);
     const [awaitModalVisible, setAwaitModalVisible] = useState(true);
-    const [gameMatrix, setGameMatrix] = useState({});
+    const [gameMatrix, setGameMatrix] = useState();
+    const [lastTap, setLastTap] = useState(null);
+    const [playingNow, setPlayingNow] = useState(false);
 
     const gameStart = () => {
-        const shuffledNames = shuffleArray(playerNames);  // Shuffle the players at the start
+        // Shuffle Names
+        const shuffledNames = shuffleArray(playerNames);
         setShuffledPlayerNames(shuffledNames);
 
+        // Create points/game matrix
         const dictionary = playerNames.reduce((acc, key) => {
             acc[key] = 0;
             return acc;
         }, {});
-        setGameMatrix(dictionary)
+        setGameMatrix(dictionary);
 
+        // Initialise game
         setPlayerPlaying(0);
         setPlayerAsking(1);
         setCurrentRound(1);
 
+        // Pick move of the first player
         let k = pickRandomKey(moves);
         setActionPlaying(k);
         setActionPlayingName(moves[k]);
 
+        // Pick category of first round
         let t = pickRandomKey(data.challenges);
         setChallenge(data.challenges[t][moves[k]][Math.floor(Math.random() * data.challenges[t][moves[k]].length)]);
         setCategoryName(t);
@@ -78,6 +88,13 @@ function GameScreen({ route }) {
         if (playerPlaying + 1 < shuffledPlayerNames.length) {
             setPlayerPlaying((prev) => prev + 1);
             setPlayerAsking((prev) => (prev + 1) % shuffledPlayerNames.length);
+
+            let k = pickRandomKey(moves);
+            setActionPlaying(k);
+            setActionPlayingName(moves[k]);    
+
+            setChallenge(data.challenges[categoryName][moves[k]][Math.floor(Math.random() * data.challenges[categoryName][moves[k]].length)]);
+
         } else {
             if (currentRound < roundsCount) {
                 setCurrentRound((prev) => prev + 1);
@@ -85,20 +102,25 @@ function GameScreen({ route }) {
                 setShuffledPlayerNames(reshuffledNames);
                 setPlayerPlaying(0);
                 setPlayerAsking(1);
+
+                // Pick new move
+                let k = pickRandomKey(moves);
+                setActionPlaying(k);
+                setActionPlayingName(moves[k]);
+        
+
+                // Pick new category on round change
+                let t = pickRandomKey(data.challenges);
+                setChallenge(data.challenges[t][moves[k]][Math.floor(Math.random() * data.challenges[t][moves[k]].length)]);
+                setCategoryName(t);
             } else {
-                Alert.alert("GAME FINISHED");
-                setStatsModalVisible(true)
+                setStatsModalVisible(true);
+                return
             }
         }
 
-        let k = pickRandomKey(moves);
-        setActionPlaying(k);
-        setActionPlayingName(moves[k]);
 
-        console.log('DATA CHALLENGES:', data.challenges)
-        let t = pickRandomKey(data.challenges);
-        setChallenge(data.challenges[t][moves[k]][Math.floor(Math.random() * data.challenges[t][moves[k]].length)]);
-        setCategoryName(t);
+
     };
 
     useEffect(() => {
@@ -125,12 +147,12 @@ function GameScreen({ route }) {
     }, [timeLeft]);
 
     const closeModal = (answer) => {
-        if (answer == 1) {
-            let tmpMatrix = gameMatrix
-            tmpMatrix[shuffledPlayerNames[playerPlaying]] = tmpMatrix[shuffledPlayerNames[playerPlaying]] + 1
-            setGameMatrix(tmpMatrix)
+        if (answer === 1) {
+            let tmpMatrix = { ...gameMatrix };
+            tmpMatrix[shuffledPlayerNames[playerPlaying]] += 1;
+            setGameMatrix(tmpMatrix);
         }
-        console.log(gameMatrix)
+        console.log(gameMatrix);
         switchPlayer();
         setModalVisible(false);
         setAwaitModalVisible(true);
@@ -159,8 +181,28 @@ function GameScreen({ route }) {
         });
     };
 
+    const handleDoubleTap = () => {
+        const currentTime = Date.now();
+        const DOUBLE_TAP_DELAY = 300; // Time interval for double tap detection (in milliseconds)
+
+        if (lastTap && (currentTime - lastTap) < DOUBLE_TAP_DELAY && playingNow) {
+            // Double tap detected
+            setModalVisible(true);
+            setLastTap(null);
+            setPlayingNow(false);
+            setTimeLeft(-1);
+        } else {
+            // Single tap or reset
+            setLastTap(currentTime);
+        }
+    };
+
     return (
-        <View style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
+        <TouchableOpacity
+            style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}
+            onPress={handleDoubleTap} // Handle double tap
+            activeOpacity={1} // Ensure the touchable area is fully responsive
+        >
             <View style={styles.banner}>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
@@ -183,6 +225,7 @@ function GameScreen({ route }) {
                 onTap={() => {
                     setAwaitModalVisible(false);
                     setTimeLeft(seconds || 3);
+                    setPlayingNow(true)
                 }}
                 playerName={shuffledPlayerNames[playerPlaying]}
                 action={actionPlaying}
@@ -196,12 +239,13 @@ function GameScreen({ route }) {
                 playerName={shuffledPlayerNames[playerPlaying]}
             />
 
-            <StatsModal
-                visible={statsModalVisible}
-                // onFinish={closeModal}
-                gameMatrix={gameMatrix}
-            />
-        </View>
+            {statsModalVisible && (
+                <StatsModal
+                    visible={statsModalVisible}
+                    gameMatrix={gameMatrix}
+                />
+            )}
+        </TouchableOpacity>
     );
 }
 
@@ -250,4 +294,3 @@ const styles = StyleSheet.create({
 });
 
 export default GameScreen;
-

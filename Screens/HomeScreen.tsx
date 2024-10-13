@@ -13,18 +13,15 @@ import {
     Dimensions
     
 } from 'react-native';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+   } from 'react-native-responsive-screen'
+   
 
-import GameButton from '../Components/Button';
 
-const { width, height } = Dimensions.get('window');
 
-//Guideline sizes are based on standard ~5" screen mobile device
-const guidelineBaseWidth = 350;
-const guidelineBaseHeight = 680;
 
-const scale = size => width / guidelineBaseWidth * size;
-const verticalScale = size => height / guidelineBaseHeight * size;
-const moderateScale = (size, factor = 0.5) => size + ( scale(size) - size ) * factor;
 
 
 function HomeScreen({ navigation }): React.JSX.Element {
@@ -49,28 +46,27 @@ function HomeScreen({ navigation }): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        borderWidth: moderateScale(8), // Thickness of the border
+        borderWidth: hp('1%'), 
         borderColor: '#669BBC',
         alignItems: 'center',
         justifyContent: 'center',
-        rowGap: moderateScale(12),
+        rowGap: hp('5%'),
     },
     logo: {
-        width: moderateScale(350),  // Adjust according to logo size
-        height: moderateScale(150), // Adjust according to logo size
+        width: wp('90%'),  // Adjust according to logo size
+        height: hp('15%'), // Adjust according to logo size
         resizeMode: 'contain', // Keep aspect ratio
     },
     btn: {
         backgroundColor: '#669BBC',
-        paddingHorizontal: 40,
-        paddingVertical: 10,
-        borderRadius: 5,
-        width: '80%',
+        paddingVertical: hp('1.5%'),
+        borderRadius: hp('1%'),
+        width: wp('80%'),
         alignItems: 'center',
     },
     closeButtonText: {
         color: '#fff',
-        fontSize: moderateScale(16),
+        fontSize: hp('2.2%')
     },
 });
 

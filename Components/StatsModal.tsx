@@ -3,19 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const StatsModal = ({ visible, gameMatrix }) => {
-    let sortedEntries = []
+    const [sortedEntries, setSortedEntries] = useState([]);
+
     // Convert the gameMatrix to an array of entries and sort it in descending order based on scores
-    useEffect(() => {sortedEntries = Object.entries(gameMatrix).sort((a, b) => b[1] - a[1]);
-    }, [visible])
+    useEffect(() => {
+        const entries = Object.entries(gameMatrix).sort((a, b) => b[1] - a[1]);
+        setSortedEntries(entries);
+    }, [gameMatrix]); // Re-run effect when gameMatrix changes
 
     return (
-        <Modal
-            visible={visible}
-            animationType="slide"
-        >
+        <Modal visible={visible} animationType="slide">
             <View style={styles.container}>
-         
-
                 <View style={styles.leaderboard}>
                     <Text style={styles.h1}>Αποτελέσματα</Text>
                     <View style={styles.row}>
