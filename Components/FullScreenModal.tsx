@@ -2,28 +2,38 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const FullScreenModal = ({ visible, onClose, playerName, action }) => {
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
+
+const FullScreenModal = ({ visible, onClose, playerName, action, currentRound, roundsCount }) => {
     return (
         <Modal
             visible={visible}
-            animationType="slide"
             transparent={false}
         >
             <View style={styles.container}>
-                <Text style={styles.title}>Player: {playerName}</Text>
-
-                <Text>Ο χρόνος σου τελείωσε. Βρήκες την σωστή απάντηση;</Text>
-                <View style={[{ flexDirection: 'row', columnGap: 8 },]}>
-
-                    <TouchableOpacity style={styles.yes} onPress={() => {onClose(1)}}>
-                        <Text style={styles.closeButtonText}>ΝΑΙ</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.no} onPress={() => {onClose(0)}}>
-                        <Text style={styles.closeButtonText}>ΟΧΙ</Text>
-                    </TouchableOpacity>
+                <View style={styles.banner}>
+                    <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
                 </View>
 
+                <View style={styles.col}>
+
+                    <Text style={styles.finished}>Τέλος Χρόνου</Text>
+                    <Text style={styles.finished}>Βρήκες την σωστή κάρτα;</Text>
+                    <View style={[{ flexDirection: 'row', columnGap: wp('3%') },]}>
+
+                        <TouchableOpacity style={styles.yes} onPress={() => { onClose(1) }}>
+                            <Text style={styles.closeButtonText}>ΝΑΙ</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.no} onPress={() => { onClose(0) }}>
+                            <Text style={styles.closeButtonText}>ΟΧΙ</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
             </View>
         </Modal>
     );
@@ -31,35 +41,47 @@ const FullScreenModal = ({ visible, onClose, playerName, action }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#f8f9fa',
+        width: wp('100%'),
+        height: hp('100%'),
+        rowGap: hp('30%')
     },
-    title: {
-        fontSize: 24,
+    finished: {
         fontWeight: 'bold',
-        marginBottom: 20,
+        fontSize: hp('3%')
     },
-    content: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 40,
-        paddingHorizontal: 20,
+    col: {
+        alignItems: 'center',
+        justifyItems: 'center',
+        rowGap: hp('3%'),
+        width: wp('100%'),
+
     },
     yes: {
-        padding: 10,
+        padding: hp('3%'),
         backgroundColor: 'green',
-        borderRadius: 5,
+        borderRadius: hp('2%'),
     },
     no: {
-        padding: 10,
+        padding: hp('3%'),
         backgroundColor: 'red',
-        borderRadius: 5,
+        borderRadius: hp('2%'),
     },
     closeButtonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: hp('2%'),
+    },
+    banner: {
+        backgroundColor: '#E63946',
+        width: wp('100%'),
+        alignItems: 'center',
+        padding: hp('1.5%'),
+    },
+    h1: {
+        fontSize: hp('2%'),
+        fontWeight: 'bold',
+        color: '#fdf0d5',
     },
 });
 

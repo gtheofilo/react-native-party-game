@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Mynerve-Regular.otf",
+      "sha1": "79b56bc4da3d80cd75fa5e3a9e897f864695bed6"
+    },
+    {
+      "path": "assets/fonts/Mynerve-Regular.ttf",
+      "sha1": "fb1c9c0b7217d4006fb565d36ce8d4947dc98586"
+    }
+  ]
+}

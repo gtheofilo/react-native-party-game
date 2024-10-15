@@ -11,8 +11,8 @@ import StatsModal from "../Components/StatsModal";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
-   } from 'react-native-responsive-screen'
-   
+} from 'react-native-responsive-screen'
+
 // Enable playback in silent mode (iOS only)
 Sound.setCategory('Playback');
 
@@ -32,9 +32,10 @@ const pickRandomKey = (obj) => {
 };
 
 const moves = {
-    'Τι είμαι;': 'whoami',
-    'Πες το με ήχο!': 'sound',
-    'Παντομίμα': 'gestures',
+    'whoami': 'Τι είμαι;',
+    'sound': 'Πες το με ήχο!',
+    'gestures': 'Παντομίμα',
+    'three_words': 'Πες τρεις λέξεις/φράσεις για την κάρτα!'
 };
 
 function GameScreen({ route }) {
@@ -68,51 +69,69 @@ function GameScreen({ route }) {
         }, {});
         setGameMatrix(dictionary);
 
-        // Initialise game
+        // Initialize game state
         setPlayerPlaying(0);
         setPlayerAsking(1);
         setCurrentRound(1);
 
-        // Pick move of the first player
-        let k = pickRandomKey(moves);
-        setActionPlaying(k);
-        setActionPlayingName(moves[k]);
+        // Pick category for the first round
+        const selectedCategory = pickRandomKey(data.challenges);
+        setCategoryName(selectedCategory);  // Update state, but use local variable for immediate logic
 
-        // Pick category of first round
-        let t = pickRandomKey(data.challenges);
-        setChallenge(data.challenges[t][moves[k]][Math.floor(Math.random() * data.challenges[t][moves[k]].length)]);
-        setCategoryName(t);
+        // Pick move for the first round
+        const selectedMoveKey = pickRandomKey(data.challenges[selectedCategory]);
+        setActionPlaying(selectedMoveKey);
+
+        // Pick a random challenge from the selected category and move
+        const challengeIndex = Math.floor(Math.random() * data.challenges[selectedCategory][selectedMoveKey].length);
+        const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
+        setChallenge(selectedChallenge);     // Set the challenge
+
+
     };
+
 
     const switchPlayer = () => {
         if (playerPlaying + 1 < shuffledPlayerNames.length) {
             setPlayerPlaying((prev) => prev + 1);
             setPlayerAsking((prev) => (prev + 1) % shuffledPlayerNames.length);
 
-            let k = pickRandomKey(moves);
-            setActionPlaying(k);
-            setActionPlayingName(moves[k]);    
+            delete data.challenges[categoryName][actionPlaying][challenge]
 
-            setChallenge(data.challenges[categoryName][moves[k]][Math.floor(Math.random() * data.challenges[categoryName][moves[k]].length)]);
+
+            // Pick move for the first round
+            const selectedMoveKey = pickRandomKey(data.challenges[categoryName]);
+            setActionPlaying(selectedMoveKey);   // Set the actual move key
+
+            // Pick a random challenge from the selected category and move
+            const challengeIndex = Math.floor(Math.random() * data.challenges[categoryName][selectedMoveKey].length);
+            const selectedChallenge = data.challenges[categoryName][selectedMoveKey][challengeIndex];
+            setChallenge(selectedChallenge);     // Set the challenge
 
         } else {
             if (currentRound < roundsCount) {
                 setCurrentRound((prev) => prev + 1);
-                const reshuffledNames = shuffleArray(shuffledPlayerNames);
-                setShuffledPlayerNames(reshuffledNames);
+                if (playerNames.length > 2) {
+                    const reshuffledNames = shuffleArray(shuffledPlayerNames);
+                    setShuffledPlayerNames(reshuffledNames);
+                }
+                delete data.challenges[categoryName]
                 setPlayerPlaying(0);
                 setPlayerAsking(1);
 
-                // Pick new move
-                let k = pickRandomKey(moves);
-                setActionPlaying(k);
-                setActionPlayingName(moves[k]);
-        
+                // Pick category for the first round
+                const selectedCategory = pickRandomKey(data.challenges);
+                setCategoryName(selectedCategory);  // Update state, but use local variable for immediate logic
 
-                // Pick new category on round change
-                let t = pickRandomKey(data.challenges);
-                setChallenge(data.challenges[t][moves[k]][Math.floor(Math.random() * data.challenges[t][moves[k]].length)]);
-                setCategoryName(t);
+                // Pick move for the first round
+                const selectedMoveKey = pickRandomKey(data.challenges[selectedCategory]);
+                setActionPlaying(selectedMoveKey);   // Set the actual move key
+
+                // Pick a random challenge from the selected category and move
+                const challengeIndex = Math.floor(Math.random() * data.challenges[selectedCategory][selectedMoveKey].length);
+                const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
+                setChallenge(selectedChallenge);     // Set the challenge
+
             } else {
                 setStatsModalVisible(true);
                 return
@@ -208,15 +227,11 @@ function GameScreen({ route }) {
             </View>
 
             <View style={styles.card}>
-                <Text style={styles.title}>
-                    {actionPlaying}
-                </Text>
-                <View style={styles.line} />
                 <Text style={styles.title1}>{challenge}</Text>
             </View>
 
             <View style={styles.time}>
-                <FontAwesomeIcon icon={faHourglass} size={32} color="#C1121F" />
+                <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
                 <Text style={styles.title12}>{timeLeft} δευτερόλεπτα απομένουν...</Text>
             </View>
 
@@ -228,15 +243,19 @@ function GameScreen({ route }) {
                     setPlayingNow(true)
                 }}
                 playerName={shuffledPlayerNames[playerPlaying]}
-                action={actionPlaying}
+                action={moves[actionPlaying]}
                 categoryName={categoryName}
                 playerAsking={shuffledPlayerNames[playerAsking]}
+                currentRound={currentRound}
+                roundsCount={roundsCount}
             />
 
             <FullScreenModal
                 visible={modalVisible}
                 onClose={closeModal}
                 playerName={shuffledPlayerNames[playerPlaying]}
+                currentRound={currentRound}
+                roundsCount={roundsCount}
             />
 
             {statsModalVisible && (
@@ -252,45 +271,37 @@ function GameScreen({ route }) {
 const styles = StyleSheet.create({
     card: {
         alignItems: 'center',
-        backgroundColor: '#003049',
-        width: '80%',
-        borderRadius: 20,
-        rowGap: 8,
-        height: '30%',
+        justifyContent: 'center',
+        backgroundColor: '#1D3557',
+        width: wp('80%'),
+        borderRadius: wp('10%'),
+        padding: hp('4.5%'),
     },
     banner: {
-        backgroundColor: '#669bbc',
-        width: '100%',
+        backgroundColor: '#E63946',
+        width: wp('100%'),
         alignItems: 'center',
-        padding: 8,
+        padding: hp('1.5%'),
     },
     time: {
         alignItems: 'center',
-    },
-    title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#fdf0d5',
-        alignItems: 'center',
-        justifyContent: 'center',
+        padding: hp('1%'),
+        rowGap: hp('2%'),
     },
     title1: {
-        fontSize: 32,
-        color: '#fdf0d5',
-        alignItems: 'center',
-        justifyContent: 'center',
+        fontSize: hp('4%'),
+        color: '#F1FAEE',
+    },
+    title12: {
+        fontSize: hp('2%'),
+        fontWeight: 'bold',
     },
     h1: {
-        textDecorationLine: 'underline',
-        fontSize: 16,
+        fontSize: hp('2%'),
         fontWeight: 'bold',
         color: '#fdf0d5',
     },
-    line: {
-        height: 1,
-        backgroundColor: 'white',
-        width: '100%',
-    },
+
 });
 
 export default GameScreen;

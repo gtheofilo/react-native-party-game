@@ -2,6 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
+
 const StatsModal = ({ visible, gameMatrix }) => {
     const [sortedEntries, setSortedEntries] = useState([]);
 
@@ -14,6 +19,13 @@ const StatsModal = ({ visible, gameMatrix }) => {
     return (
         <Modal visible={visible} animationType="slide">
             <View style={styles.container}>
+                <View>
+
+                    <TouchableOpacity style={styles.no}>
+                        <Text style={styles.closeButtonText}>ΟΧΙ</Text>
+                    </TouchableOpacity>
+
+                </View>
                 <View style={styles.leaderboard}>
                     <Text style={styles.h1}>Αποτελέσματα</Text>
                     <View style={styles.row}>
@@ -25,14 +37,17 @@ const StatsModal = ({ visible, gameMatrix }) => {
                             <Text style={[
                                 index === 0 && styles.top,
                                 index === 1 && styles.second,
-                                index === 2 && styles.third
+                                index === 2 && styles.third,
+                                index > 2 && styles.sample
                             ]}>
                                 {index + 1}. {player}
                             </Text>
                             <Text style={[
                                 index === 0 && styles.top,
                                 index === 1 && styles.second,
-                                index === 2 && styles.third
+                                index === 2 && styles.third,
+                                index > 2 && styles.sample
+
                             ]}>
                                 {score}
                             </Text>
@@ -46,31 +61,31 @@ const StatsModal = ({ visible, gameMatrix }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: hp('100%'),
+        width: wp('100%'),
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'black',
+        backgroundColor: 'white',
     },
     leaderboard: {
-        backgroundColor: 'white',
-        borderRadius: 32,
-        width: '100%',
-        paddingTop: 16,
-        paddingBottom: 256,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        backgroundColor: 'gray',
+        borderTopLeftRadius: hp('5%'),
+        borderTopRightRadius: hp('5%'),
+        width: wp('100%'),
+        paddingTop: hp('3%'),
+        paddingBottom: hp('30%'),
         alignItems: 'center',
+        rowGap: hp('1.5%')
     },
     row: {
         flexDirection: 'row',
-        gap: 14, // Changed from colGap to gap
-        width: '70%',
+        gap: wp('5%'), 
+        width: wp('70%'),
         justifyContent: 'space-between',
-        marginBottom: 4,
     },
     h1: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: hp('3%'),
     },
     no: {
         backgroundColor: 'green',
@@ -78,17 +93,21 @@ const styles = StyleSheet.create({
     top: {
         color: 'gold',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: hp('2.5%'),
     },
     second: {
         color: 'silver',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: hp('2.5%'),
     },
     third: {
         color: '#CD7F32',
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: hp('2.5%'),
+    },
+    sample: {
+        color: 'black',
+        fontSize: hp('2.5%'),
     },
     closeButtonText: {
         color: 'white',
