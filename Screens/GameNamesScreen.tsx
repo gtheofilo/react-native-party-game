@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import type { PropsWithChildren } from 'react';
 import {
     SafeAreaView,
     ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
-    useColorScheme,
     View,
     TouchableOpacity,
     TextInput,
 } from 'react-native';
 
-import GameButton from '../Components/Button';
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
 
-function GameNamesScreen({ route, navigation }): React.JSX.Element {
+function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
 
@@ -25,86 +25,104 @@ function GameNamesScreen({ route, navigation }): React.JSX.Element {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.h1}>Λάβετε username και ετοιμαστείτε για παιχνίδι!</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.container}>
+                <Text style={styles.h1}>Λάβετε username και ετοιμαστείτε για παιχνίδι!</Text>
 
-            {players.map((player, index) => (
-                <View key={index} style={styles.inputContainer}>
-                    <Text style={styles.h2}>Παίχτης {index + 1}</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
-                        value={player}
-                        onChangeText={(text) => handleChangeText(text, index)}
-                    />
-                </View>
-            ))}
+                {players.map((player, index) => (
+                    <View key={index} style={styles.inputContainer}>
+                        <Text style={styles.h2}>Παίχτης {index + 1}</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
+                            value={player}
+                            onChangeText={(text) => handleChangeText(text, index)}
+                        />
+                    </View>
+                ))}
 
-            <Text>(Φήμες λένε ότι το καλύτερο username κερδίζει το παιχνίδι)</Text>
-            <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Game', {
-                playerNames: players,
-                roundsCount: roundsCount,
-                seconds: seconds,
-            })}>
-                <Text style={styles.closeButtonText}>Ας ξεκινήσουμε!</Text>
-            </TouchableOpacity>
+                <Text style={styles.tipText}>(Φήμες λένε ότι το καλύτερο username κερδίζει το παιχνίδι)</Text>
 
-
-
-        </ScrollView>
+                <TouchableOpacity 
+                    style={styles.btn} 
+                    onPress={() => navigation.navigate('Game', {
+                        playerNames: players,
+                        roundsCount: roundsCount,
+                        seconds: seconds,
+                    })}
+                >
+                    <Text style={styles.closeButtonText}>Ας ξεκινήσουμε!</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        rowGap: 24,
-        paddingHorizontal: 8,
-        height: '100%',
-        width: '100%',
+    safeArea: {
         flex: 1,
+        height: hp('100%'),
+        width: wp('100%')
+    },
+    container: {
+        paddingHorizontal: wp('2.3%'),
+        paddingVertical: hp('2%'),
         alignItems: 'center',
-
+        height: hp('100%'),
+        width: wp('100%')
     },
     h1: {
         fontWeight: 'bold',
-        fontSize: 20,
-        marginTop: 16,
-        textAlign: 'center', // Ensure title is centered
+        fontSize: 22,
+        marginBottom: 20,
+        textAlign: 'center',
     },
     h2: {
-        fontSize: 16,
+        fontSize: hp('2%'),
     },
     inputContainer: {
-        marginBottom: 15,
+        marginBottom: hp('3%'),
+        rowGap: hp('1%'),
         width: '100%',
-        rowGap: 4,
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        borderRadius: 5,
+        height: hp('5%'),
+        borderColor: '#457b9d',
+        borderWidth: hp('0.3%'),
+        paddingHorizontal: wp('2%'),
+        borderRadius: hp('1%'),
         width: '100%',
     },
-    btn: {
-        backgroundColor: '#C1121F',
-        paddingHorizontal: 40,
-        paddingVertical: 10,
-        borderRadius: 5,
-        marginTop: 'auto',
-        marginBottom: 16,
-        alignItems: 'center'
+    tipText: {
+        marginBottom: 20,
+        fontStyle: 'italic',
+        textAlign: 'center',
     },
+    btn: {
+        marginTop: 'auto',
+        backgroundColor: '#E63946',
+        paddingVertical: hp('2%'),
+        borderRadius: hp('2%'),
+        width: wp('70%'),
+        alignItems: 'center',
+        marginBottom: hp('2%'),
+        borderColor: '#fff',
+        borderWidth: hp('0.5%'),
+        // Shadow properties for iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: hp('0.8%') },
+        shadowOpacity: 0.3,
+        shadowRadius: hp('1%'),
+        // Elevation for Android (creates shadow-like effect)
+        elevation: 5,
+        // Gradient-like effect (optional, if you want to simulate lighting from top)
+        backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
+    },    
     closeButtonText: {
         color: '#fff',
         fontSize: 16,
+        fontWeight: 'bold',
     },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        columnGap: 8,
-    }
 });
 
 export default GameNamesScreen;

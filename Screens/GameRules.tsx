@@ -27,11 +27,11 @@ import {
     ANIMATION_DURATION,
 } from '../constant';
 
-type HomeScreenProps = PropsWithChildren<{
+type GameRulesProps = PropsWithChildren<{
     navigation: any;
 }>;
 
-function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
+function GameRules({ navigation }: GameRulesProps): React.JSX.Element {
     const initialValue = 0;
     const translateValue = useRef(new Animated.Value(initialValue)).current;
 
@@ -58,9 +58,7 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Wrapper View to hold background image and content */}
             <View style={styles.contentWrapper}>
-                {/* Background image */}
                 <AnimatedImage
                     resizeMode="repeat"
                     style={[styles.background, {
@@ -75,18 +73,37 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
                     }]}
                     source={backgroundImage}
                 />
-
-                {/* Content over the background */}
                 <View style={styles.content}>
-                    <Text style={styles.brandName}>Βρές την κάρτα!</Text>
-                    <Text style={styles.brandName}>Παιχνίδι Παρέας</Text>
+                    <Text style={styles.textHeader}>Πώς παίζεται;</Text>
 
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameInit')}>
-                        <Text style={styles.closeButtonText}>ΕΝΑΡΞΗ</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.text}>
+                        Αφού επιλέξετε τις ρυθμίσεις του παιχνιδιού (αριθμός παικτών, γύρων και διάρκεια της κάθε δοκιμασίας), το παιχνίδι ξεκινάει!
+                    </Text>
 
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameRules')}>
-                        <Text style={styles.closeButtonText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
+                    <Text style={styles.text}>
+                        Σε κάθε γύρο, παίζεται μία συγκεκριμένη κατηγορία ερωτήσεων. Οι παίκτες παίζουν συνεργατικά, με τον έναν να περιγράφει την κάρτα και τον άλλο να προσπαθεί να τη βρει.
+                    </Text>
+
+                    <Text style={styles.text}>
+                        Υπάρχουν τρεις τρόποι για την περιγραφή της κάρτας:
+                    </Text>
+
+                    <Text style={styles.text}>
+                        1. Με παντομίμα, όπου ο παίκτης προσπαθεί να μιμηθεί το περιεχόμενο της κάρτας με κινήσεις.
+                    </Text>
+                    <Text style={styles.text}>
+                        2. Με ήχους, όπου ο παίκτης δημιουργεί ήχους σχετικούς με την κάρτα.
+                    </Text>
+                    <Text style={styles.text}>
+                        3. Με τις απαντήσεις "Ναι", "Όχι", "Μπορεί", όπου ο παίκτης που ψάχνει την κάρτα κάνει ερωτήσεις και ο άλλος απαντάει μόνο με αυτές τις τρεις επιλογές.
+                    </Text>
+
+                    <Text style={styles.text}>
+                        Κάθε σωστή απάντηση δίνει και στους δύο παίκτες από έναν πόντο, ως ένδειξη της επιτυχούς συνεργασίας τους.
+                    </Text>
+
+                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Home')}>
+                        <Text style={styles.closeButtonText}>ΠΙΣΩ...</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -95,6 +112,18 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
+    textHeader: {
+        color: '#457B9D',
+        fontSize: hp('3.5%'),
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    text: {
+        color: 'black',
+        fontSize: hp('2%'),
+        width: wp('90%'),
+        textAlign: 'justify',
+    },
     container: {
         flex: 1,
     },
@@ -104,16 +133,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content: {
+        padding: hp('5%'),
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1, // Ensure the content is above the background
-    },
-    brandName: {
-        color: "#457B9D",
-        fontSize: hp('4%'),
-        fontFamily: 'Mynerve-Regular',
-        marginBottom: hp('2%'),
+        rowGap: hp('3%'),
+        width: wp('100%'),
+        zIndex: 1,
     },
     btn: {
         backgroundColor: '#E63946',
@@ -121,19 +146,15 @@ const styles = StyleSheet.create({
         borderRadius: hp('2%'),
         width: wp('70%'),
         alignItems: 'center',
-        marginBottom: hp('2%'),
+        marginTop: hp('5%'),
         borderColor: '#fff',
         borderWidth: hp('0.5%'),
-        // Shadow properties for iOS
         shadowColor: '#000',
         shadowOffset: { width: 0, height: hp('0.8%') },
         shadowOpacity: 0.3,
         shadowRadius: hp('1%'),
-        // Elevation for Android (creates shadow-like effect)
         elevation: 5,
-        // Gradient-like effect (optional, if you want to simulate lighting from top)
-        backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
-    },    
+    },
     closeButtonText: {
         color: '#fff',
         fontSize: hp('2.2%'),
@@ -145,8 +166,8 @@ const styles = StyleSheet.create({
         height: 1200,
         top: 0,
         opacity: 0.6,
-        zIndex: -1, // Move the background behind the content
+        zIndex: -1,
     },
 });
 
-export default HomeScreen;
+export default GameRules;

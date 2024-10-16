@@ -32,7 +32,7 @@ const pickRandomKey = (obj) => {
 };
 
 const moves = {
-    'whoami': 'Τι είμαι;',
+    'whoami': 'Ναί, Όχι, Περίπου',
     'sound': 'Πες το με ήχο!',
     'gestures': 'Παντομίμα',
     'three_words': 'Πες τρεις λέξεις/φράσεις για την κάρτα!'

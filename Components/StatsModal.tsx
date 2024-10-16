@@ -19,11 +19,15 @@ const StatsModal = ({ visible, gameMatrix }) => {
     return (
         <Modal visible={visible} animationType="slide">
             <View style={styles.container}>
-                <View>
+                <View style={styles.col1}>
 
-                    <TouchableOpacity style={styles.no}>
+                    {/* <TouchableOpacity style={styles.no}>
                         <Text style={styles.closeButtonText}>ΟΧΙ</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+
+                    <Text style={styles.h2}>Συγχαρητήρια. Το παιχνίδι τελείωσε!</Text>
+
+                    <Text style={styles.h2}>Απολαύστε τα στατιστικά ή ξεκινήστε από την αρχή.</Text>
 
                 </View>
                 <View style={styles.leaderboard}>
@@ -65,21 +69,47 @@ const styles = StyleSheet.create({
         width: wp('100%'),
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'white',
+        backgroundColor: '#E0E0E0',
     },
+    col1: {
+        justifyContent: 'center', 
+        alignItems: 'center',
+        height: hp('50%'),
+        width: wp('95%'),
+        rowGap: hp('1%')
+
+    },
+    h2: {
+        fontSize: hp('2%'),
+        fontWeight: 'bold',
+        color: '#457B9D',
+
+    },
+
     leaderboard: {
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
         borderTopLeftRadius: hp('5%'),
         borderTopRightRadius: hp('5%'),
         width: wp('100%'),
+        height: hp('50%'),
         paddingTop: hp('3%'),
         paddingBottom: hp('30%'),
         alignItems: 'center',
-        rowGap: hp('1.5%')
+        rowGap: hp('1.5%'),
+        shadowColor: '#000', // Shadow color
+        shadowOffset: {
+            width: 0, // Horizontal offset
+            height: 2, // Vertical offset
+        },
+        shadowOpacity: 0.25, // Shadow opacity
+        shadowRadius: 3.5, // Shadow blur radius
+
+        // Shadow for Android
+        elevation: 5, // Elevation level
     },
     row: {
         flexDirection: 'row',
-        gap: wp('5%'), 
+        gap: wp('5%'),
         width: wp('70%'),
         justifyContent: 'space-between',
     },

@@ -9,6 +9,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+import Buzzer from './Buzzer';
 
 
 Sound.setCategory('Playback');
@@ -48,29 +49,36 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
     const playBeep = () => {
         if (beepSound.current) {
-            beepSound.current.play((success) => {
-                if (!success) {
-                    console.error('Sound playback failed');
-                }
+            beepSound.current.stop(() => {
+                beepSound.current.play((success) => {
+                    if (!success) {
+                        console.error('Sound playback failed');
+                    }
+                });
             });
         }
     };
+    
 
     useEffect(() => {
         if (countdown !== null && countdown >= 0) {
             // Start the countdown when it is greater than or equal to 0
             intervalId.current = setInterval(() => {
-                setCountdown((prev) => prev - 1);
+                setCountdown((prev) => {
+                    if (prev > 0) {
+                        playBeep(); // Play beep sound every second, only if countdown is greater than 0
+                    }
+                    return prev - 1;
+                });
                 setFlashing((prev) => !prev); // Toggle flashing state
             }, 1000); // Decrease countdown every second
-            playBeep(); // Play beep sound immediately when countdown starts
         } else if (countdown === -1) {
             // When countdown reaches -1, clear the interval and stop flashing
             clearInterval(intervalId.current);
             setFlashing(false);
             onTap();
         }
-
+    
         // Cleanup the interval on unmount or when countdown changes
         return () => clearInterval(intervalId.current);
     }, [countdown]);
@@ -103,13 +111,12 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
                 <View style={styles.description}>
                     <Text style={styles.title}>{categoryName}</Text>
-                </View>
-
-                <View style={styles.description}>
+                    <View style={styles.line}></View>
                     <Text style={styles.title}>{action}</Text>
+
                 </View>
 
-                <Text style={styles.subtitle} onPress={startCountDown}>(Έναρξη Χρόνου)</Text>
+                <Buzzer onPress={startCountDown}></Buzzer>
 
                 {countdown !== null && (
                     <View style={styles.countdownContainer}>
@@ -181,6 +188,12 @@ const styles = StyleSheet.create({
     },
     flashingText: {
         color: '#E63946',
+    },
+    line: {
+        height: hp('0.5%'),          // Height of the line
+        backgroundColor: 'red', // Color of the line (black)
+        marginVertical: hp('2%'), // Space around the line,
+        width: wp('50%')
     },
 });
 

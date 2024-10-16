@@ -47,7 +47,7 @@ function GameInitScreen({ navigation }) {
 
             <View style={styles.list}>
                 <View style={styles.row}>
-                    <FontAwesomeIcon icon={faUserNinja} size={16} color="#C1121F" />
+                    <FontAwesomeIcon icon={faUserNinja} size={16} color="#E63946" />
                     <Text style={styles.h2}>Αριθμός Παικτών</Text>
                 </View>
 
@@ -56,7 +56,7 @@ function GameInitScreen({ navigation }) {
 
             <View style={styles.list}>
                 <View style={styles.row}>
-                    <FontAwesomeIcon icon={faCircle} size={16} color="#C1121F" />
+                    <FontAwesomeIcon icon={faCircle} size={16} color="#E63946" />
                     <Text style={styles.h2}>Αριθμός Γύρων</Text></View>
                 <HorizontalListOption options={[1, 3, 5, 10, 15]} callBack={callbackRoundsCount} />
             </View>
@@ -64,20 +64,20 @@ function GameInitScreen({ navigation }) {
             <View style={styles.list}>
                 <View style={styles.row}>
 
-                    <FontAwesomeIcon icon={faClock} size={16} color="#C1121F" />
+                    <FontAwesomeIcon icon={faClock} size={16} color="#E63946" />
 
                     <Text style={styles.h2}>Αριθμός Δευτερολέπτων</Text></View>
                 <HorizontalListOption options={[30, 60, 90]} callBack={callbackSeconds} />
             </View>
 
-            <View style={styles.list}>
+            {/* <View style={styles.list}>
                 <View style={styles.row}>
 
                     <FontAwesomeIcon icon={faList} size={16} color="#C1121F" />
 
                     <Text style={styles.h2}>Κατηγορίες</Text></View>
                 <HorizontalListOption options={[30, 60, 90]} callBack={callbackSeconds} />
-            </View>
+            </View> */}
 
             <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameNames', {
                 playersCount: playersCount,
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
         width: wp('100%'),
         flex: 1,
         alignItems: 'center',
-
     },
     h1: {
         fontWeight: 'bold',
@@ -115,14 +114,25 @@ const styles = StyleSheet.create({
         rowGap: hp('1%'),
     },
     btn: {
-        backgroundColor: '#C1121F',
-        paddingVertical: hp('1.5%'),
-        borderRadius: hp('20%'),
         marginTop: 'auto',
-        marginBottom: hp('2%'),
+        backgroundColor: '#E63946',
+        paddingVertical: hp('2%'),
+        borderRadius: hp('2%'),
+        width: wp('70%'),
         alignItems: 'center',
-        width: wp('90%')
-    },
+        marginBottom: hp('2%'),
+        borderColor: '#fff',
+        borderWidth: hp('0.5%'),
+        // Shadow properties for iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: hp('0.8%') },
+        shadowOpacity: 0.3,
+        shadowRadius: hp('1%'),
+        // Elevation for Android (creates shadow-like effect)
+        elevation: 5,
+        // Gradient-like effect (optional, if you want to simulate lighting from top)
+        backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
+    },    
     closeButtonText: {
         color: '#fff',
         fontSize: hp('2%'),
