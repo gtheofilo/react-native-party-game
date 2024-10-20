@@ -58,10 +58,11 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
             });
         }
     };
-    
+
 
     useEffect(() => {
         if (countdown !== null && countdown >= 0) {
+            console.log(countdown)
             // Start the countdown when it is greater than or equal to 0
             intervalId.current = setInterval(() => {
                 setCountdown((prev) => {
@@ -78,7 +79,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
             setFlashing(false);
             onTap();
         }
-    
+
         // Cleanup the interval on unmount or when countdown changes
         return () => clearInterval(intervalId.current);
     }, [countdown]);
@@ -107,7 +108,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                 <Text style={styles.title}>Σου περιγράφει ο {playerAsking}</Text>
 
 
-                <Text style={styles.subtitle}>{funnyQuote}</Text>
+                {/* <Text style={styles.subtitle}>{funnyQuote}</Text> */}
 
                 <View style={styles.description}>
                     <Text style={styles.title}>{categoryName}</Text>
@@ -118,13 +119,11 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
                 <Buzzer onPress={startCountDown}></Buzzer>
 
-                {countdown !== null && (
-                    <View style={styles.countdownContainer}>
-                        <Text style={[styles.countdownText, flashing && styles.flashingText]}>
-                            {countdown > 0 ? countdown : 'Go'}
-                        </Text>
-                    </View>
-                )}
+                <View style={styles.countdownContainer}>
+                    <Text style={[styles.countdownText, flashing && styles.flashingText]}>
+                        {countdown > 0 ? countdown : 'Πάμε'}
+                    </Text>
+                </View>
             </View>
         </Modal>
     );
@@ -134,8 +133,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: 'black',
-        rowGap: 32,
+        backgroundColor: '#f1faee',
+        justifyContent: 'space-between',
     },
     banner: {
         backgroundColor: '#E63946',
@@ -157,43 +156,43 @@ const styles = StyleSheet.create({
     description: {
         alignItems: 'center',
         borderWidth: 8,
-        borderColor: '#E63946',
+        borderColor: '#457b9d',
         width: '90%',
         padding: 16,
     },
     title: {
         fontSize: 24,
-        color: 'white',
+        color: '#1d3557',
         fontWeight: 'bold',
     },
     playerName: {
         fontFamily: 'Mynerve-Regular',
         fontSize: 36,
-        color: 'white',
+        color: '#457b9d',
     },
     subtitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'white',
+        color: '#457b9d',
     },
     countdownContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
     },
     countdownText: {
-        fontSize: 48,
+        fontSize: hp('5%'),
         fontWeight: 'bold',
-        color: 'white',
+        color: '#457b9d',
+        marginBottom: hp('1%')
     },
     flashingText: {
         color: '#E63946',
     },
     line: {
         height: hp('0.5%'),          // Height of the line
-        backgroundColor: 'red', // Color of the line (black)
+        backgroundColor: '#457b9d', // Color of the line (black)
         marginVertical: hp('2%'), // Space around the line,
-        width: wp('50%')
+        width: wp('70%')
     },
 });
 

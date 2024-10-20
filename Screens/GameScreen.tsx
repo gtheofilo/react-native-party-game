@@ -12,6 +12,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+import KeepAwake from 'react-native-keep-awake';
 
 // Enable playback in silent mode (iOS only)
 Sound.setCategory('Playback');
@@ -35,7 +36,6 @@ const moves = {
     'whoami': 'Ναί, Όχι, Περίπου',
     'sound': 'Πες το με ήχο!',
     'gestures': 'Παντομίμα',
-    'three_words': 'Πες τρεις λέξεις/φράσεις για την κάρτα!'
 };
 
 function GameScreen({ route }) {
@@ -46,7 +46,6 @@ function GameScreen({ route }) {
     const [playerAsking, setPlayerAsking] = useState(1);
     const [shuffledPlayerNames, setShuffledPlayerNames] = useState([]);
     const [actionPlaying, setActionPlaying] = useState(null);
-    const [actionPlayingName, setActionPlayingName] = useState(null);
     const [timeLeft, setTimeLeft] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [statsModalVisible, setStatsModalVisible] = useState(false);
@@ -56,6 +55,18 @@ function GameScreen({ route }) {
     const [gameMatrix, setGameMatrix] = useState();
     const [lastTap, setLastTap] = useState(null);
     const [playingNow, setPlayingNow] = useState(false);
+
+
+    useEffect(() => {
+        // Activate the keep awake functionality
+        KeepAwake.activate();
+
+        // Cleanup function to deactivate when the component unmounts
+        return () => {
+            KeepAwake.deactivate();
+        };
+    }, []);
+
 
     const gameStart = () => {
         // Shuffle Names
@@ -75,7 +86,7 @@ function GameScreen({ route }) {
         setCurrentRound(1);
 
         // Pick category for the first round
-        const selectedCategory = pickRandomKey(data.challenges);
+        const selectedCategory = "Τραγούδια";
         setCategoryName(selectedCategory);  // Update state, but use local variable for immediate logic
 
         // Pick move for the first round
@@ -111,10 +122,6 @@ function GameScreen({ route }) {
         } else {
             if (currentRound < roundsCount) {
                 setCurrentRound((prev) => prev + 1);
-                if (playerNames.length > 2) {
-                    const reshuffledNames = shuffleArray(shuffledPlayerNames);
-                    setShuffledPlayerNames(reshuffledNames);
-                }
                 delete data.challenges[categoryName]
                 setPlayerPlaying(0);
                 setPlayerAsking(1);

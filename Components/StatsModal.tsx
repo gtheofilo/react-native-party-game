@@ -29,6 +29,10 @@ const StatsModal = ({ visible, gameMatrix }) => {
 
                     <Text style={styles.h2}>Απολαύστε τα στατιστικά ή ξεκινήστε από την αρχή.</Text>
 
+                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameRules')}>
+                        <Text style={styles.closeButtonText}>ΝΕΟ ΠΑΙΧΝΙΔΙ</Text>
+                    </TouchableOpacity>
+
                 </View>
                 <View style={styles.leaderboard}>
                     <Text style={styles.h1}>Αποτελέσματα</Text>
@@ -72,11 +76,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#E0E0E0',
     },
     col1: {
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center',
         height: hp('50%'),
         width: wp('95%'),
-        rowGap: hp('1%')
+        rowGap: hp('2%')
 
     },
     h2: {
@@ -142,6 +146,30 @@ const styles = StyleSheet.create({
     closeButtonText: {
         color: 'white',
         fontSize: 16,
+    },
+    btn: {
+        backgroundColor: '#E63946',
+        paddingVertical: hp('2%'),
+        borderRadius: hp('2%'),
+        width: wp('70%'),
+        alignItems: 'center',
+        marginBottom: hp('2%'),
+        borderColor: '#fff',
+        borderWidth: hp('0.5%'),
+        // Shadow properties for iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: hp('0.8%') },
+        shadowOpacity: 0.3,
+        shadowRadius: hp('1%'),
+        // Elevation for Android (creates shadow-like effect)
+        elevation: 5,
+        // Gradient-like effect (optional, if you want to simulate lighting from top)
+        backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
+    },
+    closeButtonText: {
+        color: '#fff',
+        fontSize: hp('2.2%'),
+        fontWeight: 'bold',
     },
 });
 

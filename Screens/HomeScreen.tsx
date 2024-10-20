@@ -10,6 +10,8 @@ import {
     ImageBackground,
     View
 } from 'react-native';
+import Sound from 'react-native-sound';
+
 
 import {
     heightPercentageToDP as hp,
@@ -17,6 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import backgroundImage from '../assets/bg.webp';
+import { useSound } from '../Components/SoundContext';
 
 import {
     INPUT_RANGE_START,
@@ -55,6 +58,7 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
     });
 
     const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
+    const { playSound } = useSound();
 
     return (
         <SafeAreaView style={styles.container}>
@@ -80,7 +84,7 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
                 <View style={styles.content}>
                     <Text style={styles.brandName}>Βρές την κάρτα!</Text>
                     <Text style={styles.brandName}>Παιχνίδι Παρέας</Text>
-
+                    <Text onPress={ () => {    playSound()}}>aaaaaaa</Text>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameInit')}>
                         <Text style={styles.closeButtonText}>ΕΝΑΡΞΗ</Text>
                     </TouchableOpacity>

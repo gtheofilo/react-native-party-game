@@ -7,6 +7,11 @@ import {
     StyleSheet,
 } from 'react-native';
 
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from 'react-native-responsive-screen'
+
 function Buzzer({onPress}) {
     // Reference for scaling animation
     const scaleValue = useRef(new Animated.Value(1)).current;
@@ -46,28 +51,22 @@ function Buzzer({onPress}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     buzzer: {
         backgroundColor: '#E63946',
-        borderWidth: 5,
         borderColor: 'white',
-        borderRadius: 100, // Make it circular
-        width: 200,
-        height: 200,
+        borderRadius: hp('100%'), // Make it circular
+        width: wp('40%'),
+        height: hp('20%'),
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-        elevation: 5, // Shadow for Android
     },
     buzzerText: {
         color: '#fff',
-        fontSize: 24,
+        fontSize: hp('3%'),
         fontWeight: 'bold',
     },
 });

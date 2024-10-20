@@ -95,7 +95,7 @@ function GameRules({ navigation }: GameRulesProps): React.JSX.Element {
                         2. Με ήχους, όπου ο παίκτης δημιουργεί ήχους σχετικούς με την κάρτα.
                     </Text>
                     <Text style={styles.text}>
-                        3. Με τις απαντήσεις "Ναι", "Όχι", "Μπορεί", όπου ο παίκτης που ψάχνει την κάρτα κάνει ερωτήσεις και ο άλλος απαντάει μόνο με αυτές τις τρεις επιλογές.
+                        3. Με τις απαντήσεις "Ναι", "Όχι", "Περίπου", όπου ο παίκτης που ψάχνει την κάρτα κάνει ερωτήσεις και ο άλλος απαντάει μόνο με αυτές τις τρεις λέξεις.
                     </Text>
 
                     <Text style={styles.text}>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content: {
-        padding: hp('5%'),
+        padding: hp('1%'),
         flex: 1,
         alignItems: 'center',
         rowGap: hp('3%'),
