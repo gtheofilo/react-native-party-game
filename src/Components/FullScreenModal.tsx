@@ -13,14 +13,14 @@ const FullScreenModal = ({ visible, onClose, playerName, action, currentRound, r
             visible={visible}
             transparent={false}
         >
+            <View style={styles.banner}>
+                <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
+            </View>
+
             <View style={styles.container}>
-                <View style={styles.banner}>
-                    <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
-                </View>
 
                 <View style={styles.col}>
 
-                    <Text style={styles.finished}>Τέλος Χρόνου</Text>
                     <Text style={styles.finished}>Βρήκες την σωστή κάρτα;</Text>
                     <View style={[{ flexDirection: 'row', columnGap: wp('3%') },]}>
 
@@ -41,11 +41,10 @@ const FullScreenModal = ({ visible, onClose, playerName, action, currentRound, r
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'flex-start',
         alignItems: 'center',
+        justifyContent: 'center',
         width: wp('100%'),
         height: hp('100%'),
-        rowGap: hp('30%')
     },
     finished: {
         fontWeight: 'bold',
@@ -61,12 +60,12 @@ const styles = StyleSheet.create({
     yes: {
         padding: hp('3%'),
         backgroundColor: 'green',
-        borderRadius: hp('2%'),
+        borderRadius: hp('5%'),
     },
     no: {
         padding: hp('3%'),
         backgroundColor: 'red',
-        borderRadius: hp('2%'),
+        borderRadius: hp('5%'),
     },
     closeButtonText: {
         color: '#fff',

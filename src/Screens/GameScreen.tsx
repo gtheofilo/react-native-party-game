@@ -13,6 +13,7 @@ import {
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 import KeepAwake from 'react-native-keep-awake';
+import CategoryReveal from "../Components/CategoryReveal";
 
 // Enable playback in silent mode (iOS only)
 Sound.setCategory('Playback');
@@ -34,7 +35,7 @@ const pickRandomKey = (obj) => {
 
 const moves = {
     'whoami': 'Ναί, Όχι, Περίπου',
-    'sound': 'Πες το με ήχο!',
+    'sound': 'Κάντο το με ήχο!',
     'gestures': 'Παντομίμα',
 };
 
@@ -49,13 +50,15 @@ function GameScreen({ route }) {
     const [timeLeft, setTimeLeft] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [statsModalVisible, setStatsModalVisible] = useState(false);
+    const [categoryModalVisible, setCategoryModalVisible] = useState(true);
+
     const [categoryName, setCategoryName] = useState(false);
     const [challenge, setChallenge] = useState(false);
-    const [awaitModalVisible, setAwaitModalVisible] = useState(true);
+    const [awaitModalVisible, setAwaitModalVisible] = useState(false);
     const [gameMatrix, setGameMatrix] = useState();
     const [lastTap, setLastTap] = useState(null);
     const [playingNow, setPlayingNow] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         // Activate the keep awake functionality
@@ -86,7 +89,7 @@ function GameScreen({ route }) {
         setCurrentRound(1);
 
         // Pick category for the first round
-        const selectedCategory = "Τραγούδια";
+        const selectedCategory = pickRandomKey(data.challenges);
         setCategoryName(selectedCategory);  // Update state, but use local variable for immediate logic
 
         // Pick move for the first round
@@ -98,7 +101,7 @@ function GameScreen({ route }) {
         const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
         setChallenge(selectedChallenge);     // Set the challenge
 
-
+        setIsLoading(false)
     };
 
 
@@ -118,6 +121,7 @@ function GameScreen({ route }) {
             const challengeIndex = Math.floor(Math.random() * data.challenges[categoryName][selectedMoveKey].length);
             const selectedChallenge = data.challenges[categoryName][selectedMoveKey][challengeIndex];
             setChallenge(selectedChallenge);     // Set the challenge
+            setAwaitModalVisible(true);
 
         } else {
             if (currentRound < roundsCount) {
@@ -138,6 +142,9 @@ function GameScreen({ route }) {
                 const challengeIndex = Math.floor(Math.random() * data.challenges[selectedCategory][selectedMoveKey].length);
                 const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
                 setChallenge(selectedChallenge);     // Set the challenge
+
+                setCategoryModalVisible(true);
+
 
             } else {
                 setStatsModalVisible(true);
@@ -181,7 +188,6 @@ function GameScreen({ route }) {
         console.log(gameMatrix);
         switchPlayer();
         setModalVisible(false);
-        setAwaitModalVisible(true);
     };
 
     const beepSound = useRef(null);
@@ -242,35 +248,50 @@ function GameScreen({ route }) {
                 <Text style={styles.title12}>{timeLeft} δευτερόλεπτα απομένουν...</Text>
             </View>
 
-            <AwaitsTapModal
-                visible={awaitModalVisible}
-                onTap={() => {
-                    setAwaitModalVisible(false);
-                    setTimeLeft(seconds || 3);
-                    setPlayingNow(true)
-                }}
-                playerName={shuffledPlayerNames[playerPlaying]}
-                action={moves[actionPlaying]}
-                categoryName={categoryName}
-                playerAsking={shuffledPlayerNames[playerAsking]}
-                currentRound={currentRound}
-                roundsCount={roundsCount}
-            />
+            {!isLoading && (
+                <>
+                    <CategoryReveal
+                        visible={categoryModalVisible}
 
-            <FullScreenModal
-                visible={modalVisible}
-                onClose={closeModal}
-                playerName={shuffledPlayerNames[playerPlaying]}
-                currentRound={currentRound}
-                roundsCount={roundsCount}
-            />
+                        onTap={() => {
+                            setCategoryModalVisible(false)
 
-            {statsModalVisible && (
-                <StatsModal
-                    visible={statsModalVisible}
-                    gameMatrix={gameMatrix}
-                />
+                            setAwaitModalVisible(true)
+                        }} categoryName={categoryName} currentRound={currentRound}
+                    />
+
+                    <AwaitsTapModal
+                        visible={awaitModalVisible}
+                        onTap={() => {
+                            setAwaitModalVisible(false);
+                            setTimeLeft(seconds || 3);
+                            setPlayingNow(true);
+                        }}
+                        playerName={shuffledPlayerNames[playerPlaying]}
+                        action={moves[actionPlaying]}
+                        categoryName={categoryName}
+                        playerAsking={shuffledPlayerNames[playerAsking]}
+                        currentRound={currentRound}
+                        roundsCount={roundsCount}
+                    />
+
+                    <FullScreenModal
+                        visible={modalVisible}
+                        onClose={closeModal}
+                        playerName={shuffledPlayerNames[playerPlaying]}
+                        currentRound={currentRound}
+                        roundsCount={roundsCount}
+                    />
+
+                    {statsModalVisible && (
+                        <StatsModal
+                            visible={statsModalVisible}
+                            gameMatrix={gameMatrix}
+                        />
+                    )}
+                </>
             )}
+
         </TouchableOpacity>
     );
 }
@@ -298,6 +319,7 @@ const styles = StyleSheet.create({
     title1: {
         fontSize: hp('4%'),
         color: '#F1FAEE',
+        textAlign: 'center',
     },
     title12: {
         fontSize: hp('2%'),

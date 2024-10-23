@@ -62,7 +62,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
     useEffect(() => {
         if (countdown !== null && countdown >= 0) {
             console.log(countdown)
-            playBeep(); 
+            playBeep();
             // Start the countdown when it is greater than or equal to 0
             intervalId.current = setInterval(() => {
                 setCountdown((prev) => {
@@ -90,7 +90,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
     const startCountDown = () => {
         setFlashing(false);
-        setCountdown(3); // Start the countdown at 3
+        setCountdown(3);
     };
 
     return (
@@ -101,11 +101,10 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
             <View style={styles.container}>
                 <View style={styles.card}>
                     <FontAwesomeIcon icon={faUserNinja} size={32} color="#C1121F" />
-                    <Text style={styles.playerName}>{playerName}</Text>
-                    <FontAwesomeIcon icon={faUserNinja} size={32} color="#C1121F" />
+                    <Text style={styles.playerName}> {playerName}</Text>
                 </View>
 
-                <Text style={styles.title}>Σου περιγράφει ο {playerAsking}</Text>
+                <Text style={styles.title}>περιγράφει ο {playerAsking}</Text>
 
 
                 {/* <Text style={styles.subtitle}>{funnyQuote}</Text> */}
@@ -114,6 +113,16 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                     <Text style={styles.title}>{categoryName}</Text>
                     <View style={styles.line}></View>
                     <Text style={styles.title}>{action}</Text>
+
+                    {action === 'Παντομίμα' && <Text style={styles.hint}>Χρησιμοποίησε εκφράσεις και κινήσεις για να περιγράψεις
+                        την κάρτα!
+                    </Text>}
+                    {action === 'Ναί, Όχι, Περίπου' && <Text style={styles.hint}>
+                        Δίνονται απαντήσεις μόνο με Ναί, Όχι ή Περίπου!
+                    </Text>}
+                    {action === 'Κάντο το με ήχο!' && <Text style={styles.hint}>
+                        Κάνε ήχους σχετικά με την κάρτα!
+                    </Text>}
 
                 </View>
 
@@ -133,7 +142,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#f1faee',
         justifyContent: 'space-between',
     },
     banner: {
@@ -150,30 +158,26 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 32,
-        columnGap: 16,
+        justifyContent: 'center',
+        marginTop: hp('5%'),
+        columnGap: wp('1%'),
     },
     description: {
-        alignItems: 'center',
-        borderWidth: 8,
-        borderColor: '#457b9d',
         width: '90%',
-        padding: 16,
+        padding: hp('3%'),
     },
     title: {
         fontSize: 24,
-        color: '#1d3557',
+    },
+    hint: {
+        fontSize: hp('1.5%'),
         fontWeight: 'bold',
+        marginTop: hp('1%')
     },
     playerName: {
         fontFamily: 'Mynerve-Regular',
         fontSize: 36,
-        color: '#457b9d',
-    },
-    subtitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#457b9d',
+        color: 'black',
     },
     countdownContainer: {
         justifyContent: 'center',
@@ -182,15 +186,14 @@ const styles = StyleSheet.create({
     countdownText: {
         fontSize: hp('5%'),
         fontWeight: 'bold',
-        color: '#457b9d',
         marginBottom: hp('1%')
     },
     flashingText: {
         color: '#E63946',
     },
     line: {
-        height: hp('0.5%'),          // Height of the line
-        backgroundColor: '#457b9d', // Color of the line (black)
+        height: hp('0.1%'),          // Height of the line
+        backgroundColor: 'black', // Color of the line (black)
         marginVertical: hp('2%'), // Space around the line,
         width: wp('70%')
     },

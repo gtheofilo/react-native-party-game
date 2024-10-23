@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
     SafeAreaView,
-    ScrollView,
-    StatusBar,
+    Pressable,
     StyleSheet,
     Text,
-    useColorScheme,
     View,
-    TouchableOpacity,
-    FlatList
+
 } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -22,21 +19,26 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+import { useSound } from '../Components/SoundContext';
 
 function GameInitScreen({ navigation }) {
     const [playersCount, setPlayersCount] = useState(0);
     const [roundsCount, setRoundsCount] = useState(0);
     const [seconds, setSeconds] = useState(0);
+    const { playSound } = useSound();
 
     const callbackPlayersCount = (c) => {
+        playSound('click')
         setPlayersCount(c);
     };
 
     const callbackRoundsCount = (c) => {
+        playSound('click')
         setRoundsCount(c);
     };
 
     const callbackSeconds = (c) => {
+        playSound('click')
         setSeconds(c);
     };
 
@@ -49,7 +51,7 @@ function GameInitScreen({ navigation }) {
                     <View style={styles.list}>
                         <View style={styles.row}>
                             <FontAwesomeIcon icon={faUserNinja} size={16} color="#E63946" />
-                            <Text style={styles.h2}>Αριθμός Παικτών</Text>
+                            <Text style={styles.h2}>Αριθμός Επιστημόνων</Text>
                         </View>
 
                         <HorizontalListOption options={[2, 3, 4, 5, 6, 7, 8, 9, 10]} callBack={callbackPlayersCount} />
@@ -71,13 +73,16 @@ function GameInitScreen({ navigation }) {
                         <HorizontalListOption options={[30, 60, 90]} callBack={callbackSeconds} />
                     </View>
 
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameNames', {
-                        playersCount: playersCount,
-                        roundsCount: roundsCount,
-                        seconds: seconds,
-                    })}>
-                        <Text style={styles.closeButtonText}>Επόμενο</Text>
-                    </TouchableOpacity>
+                    <Pressable android_disableSound={true} style={styles.btn} onPress={() => {
+                        playSound('click')
+                        navigation.navigate('GameNames', {
+                            playersCount: playersCount,
+                            roundsCount: roundsCount,
+                            seconds: seconds,
+                        })
+                    }}>
+                        <Text style={styles.btnText}>Επόμενο</Text>
+                    </Pressable>
 
                 </View>
             </View>
@@ -96,20 +101,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content: {
-        rowGap: hp('5%'),
-        height: hp('100%'),
-        width: wp('100%'),
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+        rowGap: hp('5%')
     },
     h1: {
         fontWeight: 'bold',
         fontSize: hp('3%'),
         marginTop: hp('2%'),
-        textAlign: 'center', // Ensure title is centered
+        textAlign: 'center',
     },
     h2: {
         fontSize: hp('2%'),
+        textAlign: 'center',
     },
     list: {
         alignItems: 'center',
@@ -135,7 +140,7 @@ const styles = StyleSheet.create({
         // Gradient-like effect (optional, if you want to simulate lighting from top)
         backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
     },
-    closeButtonText: {
+    btnText: {
         color: '#fff',
         fontSize: hp('2%'),
     },

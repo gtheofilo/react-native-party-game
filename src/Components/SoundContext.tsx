@@ -81,6 +81,31 @@ export const SoundProvider = ({ children }) => {
         }
     };
 
+    const stopBg = () => {
+        if (bgRef.current) {
+            const fadeDuration = 1000;  // Duration of fade-out in milliseconds
+            const fadeSteps = 10;       // Number of steps to fade out
+            const fadeInterval = fadeDuration / fadeSteps;
+            let currentVolume = 1;      // Assuming the sound starts at full volume
+    
+            const fadeOut = setInterval(() => {
+                currentVolume -= 1 / fadeSteps; // Decrease the volume in steps
+                if (currentVolume <= 0) {
+                    clearInterval(fadeOut);  // Clear the interval when volume is 0
+                    bgRef.current.setVolume(0);  // Ensure volume is 0
+                    bgRef.current.stop(() => {
+                        console.log('Sound stopped');
+                        bgRef.current.release(); // Release resources
+                        bgRef.current = null;    // Reset the ref
+                    });
+                } else {
+                    bgRef.current.setVolume(currentVolume);  // Set the reduced volume
+                }
+            }, fadeInterval);
+        }
+    };
+    
+
     useEffect(() => {
         return () => {
             stopSound();
@@ -88,7 +113,7 @@ export const SoundProvider = ({ children }) => {
     }, []);
 
     return (
-        <SoundContext.Provider value={{ playSound, stopSound, playBg }}>
+        <SoundContext.Provider value={{ playSound, stopSound, playBg, stopBg }}>
             {children}
         </SoundContext.Provider>
     );

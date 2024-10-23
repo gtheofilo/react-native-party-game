@@ -47,7 +47,7 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
                             navigation.navigate('GameInit');
                         }}
                     >
-                        <Text style={styles.closeButtonText}>ΕΝΑΡΞΗ</Text>
+                        <Text style={styles.btnText}>ΕΝΑΡΞΗ</Text>
                     </Pressable>
 
                     <Pressable android_disableSound={true} style={styles.btn} onPress={() => {
@@ -55,7 +55,7 @@ function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
 
                         navigation.navigate('GameRules')
                     }}>
-                        <Text style={styles.closeButtonText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
+                        <Text style={styles.btnText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
                     </Pressable>
                 </View>
             </View>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         // Gradient-like effect (optional, if you want to simulate lighting from top)
         backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
     },
-    closeButtonText: {
+    btnText: {
         color: '#fff',
         fontSize: hp('2.2%'),
         fontWeight: 'bold',

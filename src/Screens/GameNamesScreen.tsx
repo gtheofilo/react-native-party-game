@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
+    Pressable,
     TextInput,
 } from 'react-native';
 
@@ -13,10 +13,12 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+import { useSound } from '../Components/SoundContext';
 
 function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
+    const { stopBg } = useSound()
 
     const handleChangeText = (text, index) => {
         const newPlayers = [...players];
@@ -25,69 +27,80 @@ function GameNamesScreen({ route, navigation }) {
     };
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.h1}>Λάβετε username και ετοιμαστείτε για παιχνίδι!</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.contentWrapper}>
+                <ScrollView contentContainerStyle={styles.content}>
+                    <Text style={styles.h1}>Επιλέξτε username και ετοιμαστείτε για παιχνίδι!</Text>
 
-                {players.map((player, index) => (
-                    <View key={index} style={styles.inputContainer}>
-                        <Text style={styles.h2}>Παίχτης {index + 1}</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
-                            value={player}
-                            onChangeText={(text) => handleChangeText(text, index)}
-                        />
-                    </View>
-                ))}
+                    {players.map((player, index) => (
+                        <View key={index} style={styles.inputContainer}>
+                            <Text style={styles.h2}>Παίχτης {index + 1}</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
+                                value={player}
+                                onChangeText={(text) => handleChangeText(text, index)}
+                            />
+                        </View>
+                    ))}
 
-                <Text style={styles.tipText}>(Φήμες λένε ότι το καλύτερο username κερδίζει το παιχνίδι)</Text>
+                    <Text style={styles.tipText}>(Φήμες λένε ότι το καλύτερο username κερδίζει το παιχνίδι)</Text>
 
-                <TouchableOpacity 
-                    style={styles.btn} 
-                    onPress={() => navigation.navigate('Game', {
-                        playerNames: players,
-                        roundsCount: roundsCount,
-                        seconds: seconds,
-                    })}
-                >
-                    <Text style={styles.closeButtonText}>Ας ξεκινήσουμε!</Text>
-                </TouchableOpacity>
-            </ScrollView>
+                    <Pressable android_disableSound={true}
+                        style={styles.btn}
+                        onPress={() => {
+                            stopBg()
+                            navigation.navigate('Game', {
+                                playerNames: players,
+                                roundsCount: roundsCount,
+                                seconds: seconds,
+                            })
+                        }}
+                    >
+                        <Text style={styles.btnText}>Ας ξεκινήσουμε!</Text>
+                    </Pressable>
+                </ScrollView>
+            </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        height: hp('100%'),
-        width: wp('100%')
-    },
     container: {
-        paddingHorizontal: wp('2.3%'),
-        paddingVertical: hp('2%'),
+        flex: 1,
+    },
+    contentWrapper: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        height: hp('100%'),
-        width: wp('100%')
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        rowGap: hp('5%'),
+        width: wp('95%'),
+    },
+    inputContainer: {
+        rowGap: hp('1%'),
+        alignItems: 'flex-start',
+        width: '100%'
+
     },
     h1: {
         fontWeight: 'bold',
-        fontSize: 22,
-        marginBottom: 20,
+        fontSize: hp('3%'),
+        marginTop: hp('2%'),
         textAlign: 'center',
     },
     h2: {
         fontSize: hp('2%'),
-    },
-    inputContainer: {
-        marginBottom: hp('3%'),
-        rowGap: hp('1%'),
-        width: '100%',
+        textAlign: 'center',
     },
     input: {
         height: hp('5%'),
-        borderColor: '#457b9d',
+        borderColor: '#e63946',
+        color: '#1d3557',
         borderWidth: hp('0.3%'),
         paddingHorizontal: wp('2%'),
         borderRadius: hp('1%'),
@@ -117,8 +130,8 @@ const styles = StyleSheet.create({
         elevation: 5,
         // Gradient-like effect (optional, if you want to simulate lighting from top)
         backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
-    },    
-    closeButtonText: {
+    },
+    btnText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
