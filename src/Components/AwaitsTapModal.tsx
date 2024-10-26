@@ -12,7 +12,7 @@ import {
 import Buzzer from './Buzzer';
 
 
-Sound.setCategory('Playback');
+import { useSound } from '../Components/SoundContext';
 
 const funnyQuotes = [
     'Σε παρακαλώ μην μας απογοητεύσεις...',
@@ -25,114 +25,79 @@ const funnyQuotes = [
 ]
 
 const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, playerAsking, currentRound, roundsCount }) => {
-    const [countdown, setCountdown] = useState(null);
-    const [flashing, setFlashing] = useState(false);
-    const [funnyQuote, setFunnyQuote] = useState(null);
+    const [countdown, setCountdown] = useState(4);
+    const [beginCountDown, setBeginCountDown] = useState(false);
     const intervalId = useRef(null);
-    const beepSound = useRef(null);
+    const { playSound } = useSound();
 
-    useEffect(() => {
-        // Load the sound file
-        beepSound.current = new Sound(require('../assets/sounds/beep.mp3'), Sound.MAIN_BUNDLE, (error) => {
-            if (error) {
-                console.error('Failed to load the sound', error);
-            }
-        });
-
-        // Cleanup the sound when the component unmounts
-        return () => {
-            if (beepSound.current) {
-                beepSound.current.release();
-            }
-        };
-    }, []);
-
-    const playBeep = () => {
-        if (beepSound.current) {
-            beepSound.current.play((success) => {
-                if (!success) {
-                    console.error('Sound playback failed');
-                }
-            });
-
-        }
-    };
 
 
     useEffect(() => {
-        if (countdown !== null && countdown >= 0) {
-            console.log(countdown)
-            playBeep();
-            // Start the countdown when it is greater than or equal to 0
+        if (beginCountDown && countdown >= 0) {
+            playSound("beep");
             intervalId.current = setInterval(() => {
                 setCountdown((prev) => {
                     if (prev > 0) {
-                        playBeep(); // Play beep sound every second, only if countdown is greater than 0
+                        playSound("beep");
                     }
                     return prev - 1;
                 });
-                setFlashing((prev) => !prev); // Toggle flashing state
             }, 1000); // Decrease countdown every second
-        } else if (countdown === -1) {
-            // When countdown reaches -1, clear the interval and stop flashing
-            clearInterval(intervalId.current);
-            setFlashing(false);
+        } else if (beginCountDown && countdown === 0) {
             onTap();
+
+            clearInterval(intervalId.current);
+            setCountdown(4)
+            setBeginCountDown(false)
         }
 
         // Cleanup the interval on unmount or when countdown changes
-        return () => clearInterval(intervalId.current);
-    }, [countdown]);
+        return () => {
+            clearInterval(intervalId.current);
+        }
+    }, [beginCountDown, countdown]);
 
-    useEffect(() => {
-        setFunnyQuote(funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)])
-    }, [])
 
     const startCountDown = () => {
-        setFlashing(false);
-        setCountdown(3);
+        setBeginCountDown(true)
     };
 
     return (
-        <Modal visible={visible} transparent={false}>
+        <Modal visible={visible} transparent={false} animationIn="slideInLeft"
+        >
             <View style={styles.banner}>
+                <Text style={styles.bannerTitle}>{categoryName}</Text>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
             <View style={styles.container}>
                 <View style={styles.card}>
-                    <FontAwesomeIcon icon={faUserNinja} size={32} color="#C1121F" />
                     <Text style={styles.playerName}> {playerName}</Text>
+                    <Text style={styles.title}>... σου περιγράφει ο παίχτης {playerAsking}</Text>
                 </View>
-
-                <Text style={styles.title}>περιγράφει ο {playerAsking}</Text>
-
-
-                {/* <Text style={styles.subtitle}>{funnyQuote}</Text> */}
 
                 <View style={styles.description}>
-                    <Text style={styles.title}>{categoryName}</Text>
-                    <View style={styles.line}></View>
-                    <Text style={styles.title}>{action}</Text>
+                    <View style={styles.header}>
+                        <Text style={styles.categoryName}>{action}</Text>
+                    </View>
 
-                    {action === 'Παντομίμα' && <Text style={styles.hint}>Χρησιμοποίησε εκφράσεις και κινήσεις για να περιγράψεις
-                        την κάρτα!
+                    {action === 'Παντομίμα' && <Text style={styles.hint}>
+                        Αναπαράστησε την λέξη που θα εμφανιστεί μόνο με χειρονομίες, χωρίς να μιλήσεις.
+                        Χρησιμοποίησε κινήσεις για βοήθεια, όπως ο αριθμός λέξεων.
+
                     </Text>}
+
                     {action === 'Ναί, Όχι, Περίπου' && <Text style={styles.hint}>
-                        Δίνονται απαντήσεις μόνο με Ναί, Όχι ή Περίπου!
+                        Ο παίχτης που ψάχνει την λέξη κάνει ερωτήσεις και εσύ απαντάς μόνο
+                        με Ναί, Όχι, Περίπου.
                     </Text>}
-                    {action === 'Κάντο το με ήχο!' && <Text style={styles.hint}>
-                        Κάνε ήχους σχετικά με την κάρτα!
+                    {action === 'Κάν\'το με ήχο!' && <Text style={styles.hint}>
+                        Χρησιμοποίησε την φωνή σου για να περιγράψεις την κάρτα που θα εμφανιστεί.
+                        Μην χρησιμοποιήσεις ομιλία.
                     </Text>}
-
                 </View>
 
-                <Buzzer onPress={startCountDown}></Buzzer>
-
-                <View style={styles.countdownContainer}>
-                    <Text style={[styles.countdownText, flashing && styles.flashingText]}>
-                        {countdown > 0 ? countdown : 'Πάμε'}
-                    </Text>
-                </View>
+                <Buzzer onPress={startCountDown} countdown={countdown}></Buzzer>
+                <View style={[{ height: hp('1%') }]}></View>
             </View>
         </Modal>
     );
@@ -154,29 +119,52 @@ const styles = StyleSheet.create({
         fontSize: hp('2%'),
         fontWeight: 'bold',
         color: '#fdf0d5',
+        textAlign: 'center',
     },
     card: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: hp('5%'),
-        columnGap: wp('1%'),
+        rowGap: wp('5%'),
+        width: wp('90%'),
     },
     description: {
-        width: '90%',
-        padding: hp('3%'),
+        width: '80%',
+        borderWidth: hp('1%'),
+        alignItems: 'center',
+        borderRadius: hp('3%'),
+        borderColor: '#457b9d',
+    },
+    header: {
+        backgroundColor: '#457b9d',
+        width: '100%',
+        padding: hp('1%'),
+    },
+    categoryName: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: hp('3.5%'),
+        fontStyle: 'italic'
+    },
+    bannerTitle: {
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: '#fdf0d5',
     },
     title: {
-        fontSize: 24,
+        fontSize: hp('3%'),
+        textAlign: 'center',
     },
     hint: {
-        fontSize: hp('1.5%'),
+        fontSize: hp('2%'),
         fontWeight: 'bold',
-        marginTop: hp('1%')
+        marginTop: hp('1%'),
+        textAlign: 'center',
+        padding: hp('1%')
     },
     playerName: {
         fontFamily: 'Mynerve-Regular',
-        fontSize: 36,
+        fontSize: hp('6%'),
         color: 'black',
     },
     countdownContainer: {

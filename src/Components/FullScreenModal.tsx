@@ -12,6 +12,8 @@ const FullScreenModal = ({ visible, onClose, playerName, action, currentRound, r
         <Modal
             visible={visible}
             transparent={false}
+            animationIn="slideInLeft"
+
         >
             <View style={styles.banner}>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>

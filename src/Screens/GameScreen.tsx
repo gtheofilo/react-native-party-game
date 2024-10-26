@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Animated } from 'react-native';
 import AwaitsTapModal from "../Components/AwaitsTapModal";
-import GameButton from "../Components/Button";
 import FullScreenModal from "../Components/FullScreenModal";
 import data from '../assets/db/tmp.json';
-import { faHourglass } from '@fortawesome/free-solid-svg-icons';
+import { faHourglass, faHandPointer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Sound from 'react-native-sound';
 import StatsModal from "../Components/StatsModal";
@@ -14,18 +13,7 @@ import {
 } from 'react-native-responsive-screen'
 import KeepAwake from 'react-native-keep-awake';
 import CategoryReveal from "../Components/CategoryReveal";
-
-// Enable playback in silent mode (iOS only)
-Sound.setCategory('Playback');
-
-const shuffleArray = (array) => {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;
-};
+import { useSound } from '../Components/SoundContext';
 
 const pickRandomKey = (obj) => {
     const keys = Object.keys(obj);
@@ -35,7 +23,7 @@ const pickRandomKey = (obj) => {
 
 const moves = {
     'whoami': 'Ναί, Όχι, Περίπου',
-    'sound': 'Κάντο το με ήχο!',
+    'sound': 'Κάν\'το με ήχο!',
     'gestures': 'Παντομίμα',
 };
 
@@ -45,7 +33,6 @@ function GameScreen({ route }) {
     const [currentRound, setCurrentRound] = useState(1);
     const [playerPlaying, setPlayerPlaying] = useState(0);
     const [playerAsking, setPlayerAsking] = useState(1);
-    const [shuffledPlayerNames, setShuffledPlayerNames] = useState([]);
     const [actionPlaying, setActionPlaying] = useState(null);
     const [timeLeft, setTimeLeft] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -60,22 +47,37 @@ function GameScreen({ route }) {
     const [playingNow, setPlayingNow] = useState(false);
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        // Activate the keep awake functionality
-        KeepAwake.activate();
+    const { playSound } = useSound();
 
-        // Cleanup function to deactivate when the component unmounts
-        return () => {
-            KeepAwake.deactivate();
-        };
-    }, []);
+
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        // Create a loop of fade in and fade out animations
+        const loopAnimation = Animated.loop(
+            Animated.sequence([
+                Animated.timing(fadeAnim, {
+                    toValue: 1,    // Fade in to opacity 1
+                    duration: 1000,  // Duration in ms (2 seconds)
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 0.1,    // Fade out to opacity 0
+                    duration: 1000,  // Duration in ms (2 seconds)
+                    useNativeDriver: true,
+                }),
+            ])
+        );
+
+        // Start the animation loop
+        loopAnimation.start();
+
+        // Cleanup animation on component unmount
+        return () => loopAnimation.stop();
+    }, [fadeAnim]);
 
 
     const gameStart = () => {
-        // Shuffle Names
-        const shuffledNames = shuffleArray(playerNames);
-        setShuffledPlayerNames(shuffledNames);
-
         // Create points/game matrix
         const dictionary = playerNames.reduce((acc, key) => {
             acc[key] = 0;
@@ -106,9 +108,9 @@ function GameScreen({ route }) {
 
 
     const switchPlayer = () => {
-        if (playerPlaying + 1 < shuffledPlayerNames.length) {
+        if (playerPlaying + 1 < playerNames.length) {
             setPlayerPlaying((prev) => prev + 1);
-            setPlayerAsking((prev) => (prev + 1) % shuffledPlayerNames.length);
+            setPlayerAsking((prev) => (prev + 1) % playerNames.length);
 
             delete data.challenges[categoryName][actionPlaying][challenge]
 
@@ -157,24 +159,29 @@ function GameScreen({ route }) {
     };
 
     useEffect(() => {
+        KeepAwake.activate();
         gameStart();
+
+        // Cleanup function to deactivate when the component unmounts
+        return () => {
+            KeepAwake.deactivate();
+        };
+
     }, []);
 
     useEffect(() => {
         let timer;
-        if (currentRound <= roundsCount && timeLeft > 0) {
+        if (timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft((prev) => prev - 1);
             }, 1000);
             if (timeLeft === 10) {
-                playBeep();
+                playSound('countdown')
             }
-        } else if (currentRound <= roundsCount && timeLeft === 0) {
+        } else if (timeLeft === 0) {
             clearInterval(timer);
             setModalVisible(true);
-        } else if (currentRound > roundsCount) {
-            clearInterval(timer);
-        }
+        } 
 
         return () => clearInterval(timer);
     }, [timeLeft]);
@@ -182,36 +189,15 @@ function GameScreen({ route }) {
     const closeModal = (answer) => {
         if (answer === 1) {
             let tmpMatrix = { ...gameMatrix };
-            tmpMatrix[shuffledPlayerNames[playerPlaying]] += 1;
+            tmpMatrix[playerNames[playerPlaying]] += 1.5;
+            tmpMatrix[playerNames[playerAsking]] += 0.5;
+
             setGameMatrix(tmpMatrix);
         }
-        console.log(gameMatrix);
         switchPlayer();
         setModalVisible(false);
     };
 
-    const beepSound = useRef(null);
-
-    useEffect(() => {
-        beepSound.current = new Sound(require('../assets/sounds/countdown.mp3'), Sound.MAIN_BUNDLE, (error) => {
-            if (error) {
-                console.log('Failed to load the sound', error);
-                return;
-            }
-        });
-
-        return () => {
-            beepSound.current.release();
-        };
-    }, []);
-
-    const playBeep = () => {
-        beepSound.current.play((success) => {
-            if (!success) {
-                console.log('Sound playback failed');
-            }
-        });
-    };
 
     const handleDoubleTap = () => {
         const currentTime = Date.now();
@@ -222,37 +208,49 @@ function GameScreen({ route }) {
             setModalVisible(true);
             setLastTap(null);
             setPlayingNow(false);
-            setTimeLeft(-1);
+            setTimeLeft(0);
         } else {
-            // Single tap or reset
             setLastTap(currentTime);
         }
     };
 
     return (
         <TouchableOpacity
-            style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}
+            style={{ flex: 1, alignItems: 'center' }}
             onPress={handleDoubleTap} // Handle double tap
             activeOpacity={1} // Ensure the touchable area is fully responsive
         >
             <View style={styles.banner}>
+                <Text style={styles.bannerTitle}>{categoryName}</Text>
+
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
+            <View style={styles.main}>
+                <View style={styles.time}>
+                    <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
+                    <Text style={styles.title12}>{timeLeft}</Text>
+                </View>
 
-            <View style={styles.card}>
-                <Text style={styles.title1}>{challenge}</Text>
+                <View style={styles.card}>
+                    <View style={styles.content}>
+                        <Text style={styles.title1}>{challenge}</Text>
+                    </View>
+                </View>
+
+                <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
+                    <FontAwesomeIcon icon={faHandPointer} size={32} />
+
+                    <Text style={styles.title12}>Double-Tap, αν βρέθηκε η λέξη</Text>
+
+                </Animated.View>
             </View>
 
-            <View style={styles.time}>
-                <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
-                <Text style={styles.title12}>{timeLeft} δευτερόλεπτα απομένουν...</Text>
-            </View>
+
 
             {!isLoading && (
                 <>
                     <CategoryReveal
                         visible={categoryModalVisible}
-
                         onTap={() => {
                             setCategoryModalVisible(false)
 
@@ -267,10 +265,10 @@ function GameScreen({ route }) {
                             setTimeLeft(seconds || 3);
                             setPlayingNow(true);
                         }}
-                        playerName={shuffledPlayerNames[playerPlaying]}
+                        playerName={playerNames[playerPlaying]}
                         action={moves[actionPlaying]}
                         categoryName={categoryName}
-                        playerAsking={shuffledPlayerNames[playerAsking]}
+                        playerAsking={playerNames[playerAsking]}
                         currentRound={currentRound}
                         roundsCount={roundsCount}
                     />
@@ -278,7 +276,7 @@ function GameScreen({ route }) {
                     <FullScreenModal
                         visible={modalVisible}
                         onClose={closeModal}
-                        playerName={shuffledPlayerNames[playerPlaying]}
+                        playerName={playerNames[playerPlaying]}
                         currentRound={currentRound}
                         roundsCount={roundsCount}
                     />
@@ -300,10 +298,23 @@ const styles = StyleSheet.create({
     card: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#1D3557',
         width: wp('80%'),
+
+        flex: 2,
+    },
+    content: {
+        backgroundColor: '#1D3557',
         borderRadius: wp('10%'),
         padding: hp('4.5%'),
+    },
+    main: {
+        flex: 1,
+        rowGap: hp('3%')
+    },
+    bannerTitle: {
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: '#fdf0d5',
     },
     banner: {
         backgroundColor: '#E63946',
@@ -315,6 +326,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: hp('1%'),
         rowGap: hp('2%'),
+        marginTop: hp('2%')
     },
     title1: {
         fontSize: hp('4%'),
@@ -330,7 +342,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fdf0d5',
     },
-
+    fadingContainer: {
+        alignItems: 'center',
+    }
 });
 
 export default GameScreen;

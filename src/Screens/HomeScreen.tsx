@@ -22,42 +22,34 @@ type HomeScreenProps = PropsWithChildren<{
 }>;
 
 function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
-    
-    const { playSound, playBg } = useSound();
-    // playBg("background")
+
+    const { playSound } = useSound();
+
+    const moveToGameInit = () => {
+        playSound('click');
+        navigation.navigate('GameInit');
+    }
+
+    const moveToGameRules = () => {
+        playSound('click');
+        navigation.navigate('GameRules')
+    }
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.contentWrapper}>
-                {/* Background image */}
-                <BgAnimated></BgAnimated>
+            <BgAnimated></BgAnimated>
 
-                {/* Content over the background */}
-                <View style={styles.content}>
-                    <Text style={styles.brandName}>Βρές την κάρτα!</Text>
-                    <Text style={styles.brandName}>Παιχνίδι Παρέας</Text>
+            <View style={styles.content}>
+                <Text style={styles.brandName}>Βρές την κάρτα!</Text>
+                <Text style={styles.brandName}>Παιχνίδι Παρέας</Text>
 
-                    <Pressable android_disableSound={true}
-                        style={styles.btn}
-                        onPress={() => {
-                            // Play the sound when the button is pressed
-                            playSound('click');
+                <Pressable android_disableSound={true} style={styles.btn} onPress={moveToGameInit}>
+                    <Text style={styles.btnText}>ΕΝΑΡΞΗ</Text>
+                </Pressable>
 
-                            // Navigate to the GameInit screen
-                            navigation.navigate('GameInit');
-                        }}
-                    >
-                        <Text style={styles.btnText}>ΕΝΑΡΞΗ</Text>
-                    </Pressable>
-
-                    <Pressable android_disableSound={true} style={styles.btn} onPress={() => {
-                        playSound('click');
-
-                        navigation.navigate('GameRules')
-                    }}>
-                        <Text style={styles.btnText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
-                    </Pressable>
-                </View>
+                <Pressable android_disableSound={true} style={styles.btn} onPress={moveToGameRules}>
+                    <Text style={styles.btnText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
+                </Pressable>
             </View>
         </SafeAreaView>
     );
@@ -67,23 +59,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    contentWrapper: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     content: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1, // Ensure the content is above the background
     },
     brandName: {
         color: "#457B9D",
         fontSize: hp('4%'),
         fontFamily: 'Mynerve-Regular',
         marginBottom: hp('2%'),
-
     },
     btn: {
         backgroundColor: '#E63946',
@@ -94,11 +79,6 @@ const styles = StyleSheet.create({
         marginBottom: hp('2%'),
         borderColor: '#fff',
         borderWidth: hp('0.5%'),
-        // Shadow properties for iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: hp('0.8%') },
-        shadowOpacity: 0.3,
-        shadowRadius: hp('1%'),
         // Elevation for Android (creates shadow-like effect)
         elevation: 5,
         // Gradient-like effect (optional, if you want to simulate lighting from top)

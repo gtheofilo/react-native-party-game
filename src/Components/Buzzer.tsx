@@ -12,7 +12,7 @@ import {
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 
-function Buzzer({onPress}) {
+function Buzzer({ onPress, countdown }) {
     // Reference for scaling animation
     const scaleValue = useRef(new Animated.Value(1)).current;
 
@@ -35,17 +35,20 @@ function Buzzer({onPress}) {
     };
 
     return (
-        <View style={styles.container}>
-            <Animated.View style={[styles.buzzer, { transform: [{ scale: scaleValue }] }]}>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPressIn={handlePressIn}
-                    onPressOut={handlePressOut}
-                >
-                    <Text style={styles.buzzerText}>Παίξε</Text>
-                </TouchableOpacity>
-            </Animated.View>
-        </View>
+        <Animated.View>
+            <TouchableOpacity style={[styles.buzzer, { transform: [{ scale: scaleValue }] }]}
+                activeOpacity={0.8}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+            >
+                {countdown === 4 ? (
+                    <Text style={styles.buzzerText}>Πάμε!</Text>
+                ) : (
+                    <Text style={styles.buzzerText}>{countdown}</Text>
+                )}
+
+            </TouchableOpacity>
+        </Animated.View>
     );
 }
 

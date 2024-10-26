@@ -9,10 +9,7 @@ import {
 } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUserNinja, faClock, faList, faCircle } from '@fortawesome/free-solid-svg-icons';
-import { Picker } from '@react-native-picker/picker'; // Import Picker from the new package
-
-import GameButton from '../Components/Button';
+import { faUserNinja, faClock, faCircle } from '@fortawesome/free-solid-svg-icons';
 import HorizontalListOption from '../Components/HorizontalListOption';
 
 import {
@@ -42,49 +39,49 @@ function GameInitScreen({ navigation }) {
         setSeconds(c);
     };
 
+    const moveToGameNames = () => {
+        playSound('click')
+        navigation.navigate('GameNames', {
+            playersCount: playersCount,
+            roundsCount: roundsCount,
+            seconds: seconds,
+        })
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.contentWrapper}>
-                <View style={styles.content}>
-                    <Text style={styles.h1}>Ρυθμίσεις Παιχνιδιού</Text>
+            <View style={styles.content}>
+                <Text style={styles.h1}>Ρυθμίσεις Παιχνιδιού</Text>
 
-                    <View style={styles.list}>
-                        <View style={styles.row}>
-                            <FontAwesomeIcon icon={faUserNinja} size={16} color="#E63946" />
-                            <Text style={styles.h2}>Αριθμός Επιστημόνων</Text>
-                        </View>
-
-                        <HorizontalListOption options={[2, 3, 4, 5, 6, 7, 8, 9, 10]} callBack={callbackPlayersCount} />
+                <View style={styles.list}>
+                    <View style={styles.row}>
+                        <FontAwesomeIcon icon={faUserNinja} size={16} color="#E63946" />
+                        <Text style={styles.h2}>Αριθμός Παιχτών</Text>
                     </View>
 
-                    <View style={styles.list}>
-                        <View style={styles.row}>
-                            <FontAwesomeIcon icon={faCircle} size={16} color="#E63946" />
-                            <Text style={styles.h2}>Αριθμός Γύρων</Text></View>
-                        <HorizontalListOption options={[1, 3, 5, 10, 15]} callBack={callbackRoundsCount} />
-                    </View>
-
-                    <View style={styles.list}>
-                        <View style={styles.row}>
-
-                            <FontAwesomeIcon icon={faClock} size={16} color="#E63946" />
-
-                            <Text style={styles.h2}>Αριθμός Δευτερολέπτων</Text></View>
-                        <HorizontalListOption options={[30, 60, 90]} callBack={callbackSeconds} />
-                    </View>
-
-                    <Pressable android_disableSound={true} style={styles.btn} onPress={() => {
-                        playSound('click')
-                        navigation.navigate('GameNames', {
-                            playersCount: playersCount,
-                            roundsCount: roundsCount,
-                            seconds: seconds,
-                        })
-                    }}>
-                        <Text style={styles.btnText}>Επόμενο</Text>
-                    </Pressable>
-
+                    <HorizontalListOption options={[2, 3, 4, 5, 6, 7, 8, 9, 10]} callBack={callbackPlayersCount} />
                 </View>
+
+                <View style={styles.list}>
+                    <View style={styles.row}>
+                        <FontAwesomeIcon icon={faCircle} size={16} color="#E63946" />
+                        <Text style={styles.h2}>Αριθμός Γύρων</Text></View>
+                    <HorizontalListOption options={[1, 3, 5, 10, 15]} callBack={callbackRoundsCount} />
+                </View>
+
+                <View style={styles.list}>
+                    <View style={styles.row}>
+
+                        <FontAwesomeIcon icon={faClock} size={16} color="#E63946" />
+
+                        <Text style={styles.h2}>Αριθμός Δευτερολέπτων</Text></View>
+                    <HorizontalListOption options={[30, 60, 90]} callBack={callbackSeconds} />
+                </View>
+
+                <Pressable android_disableSound={true} style={styles.btn} onPress={moveToGameNames}>
+                    <Text style={styles.btnText}>Επόμενο</Text>
+                </Pressable>
+
             </View>
 
         </SafeAreaView>
@@ -94,11 +91,6 @@ function GameInitScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    contentWrapper: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     content: {
         flex: 1,

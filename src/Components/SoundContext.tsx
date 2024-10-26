@@ -6,7 +6,9 @@ import Sound from 'react-native-sound';
 const SoundContext = createContext();
 const sounds = {
     "background": require("../assets/sounds/overwerk.mp3"),
-    "click": require("../assets/sounds/switch1.mp3")
+    "click": require("../assets/sounds/switch1.mp3"),
+    "countdown": require("../assets/sounds/countdown.mp3"),
+    "beep": require('../assets/sounds/beep.mp3'),
 }
 export const SoundProvider = ({ children }) => {
     const soundRef = useRef(null); // Create a ref for sound
@@ -87,7 +89,7 @@ export const SoundProvider = ({ children }) => {
             const fadeSteps = 10;       // Number of steps to fade out
             const fadeInterval = fadeDuration / fadeSteps;
             let currentVolume = 1;      // Assuming the sound starts at full volume
-    
+
             const fadeOut = setInterval(() => {
                 currentVolume -= 1 / fadeSteps; // Decrease the volume in steps
                 if (currentVolume <= 0) {
@@ -104,7 +106,7 @@ export const SoundProvider = ({ children }) => {
             }, fadeInterval);
         }
     };
-    
+
 
     useEffect(() => {
         return () => {
