@@ -25,7 +25,7 @@ const funnyQuotes = [
 ]
 
 const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, playerAsking, currentRound, roundsCount }) => {
-    const [countdown, setCountdown] = useState(4);
+    const [countdown, setCountdown] = useState(3);
     const [beginCountDown, setBeginCountDown] = useState(false);
     const intervalId = useRef(null);
     const { playSound } = useSound();

@@ -58,14 +58,16 @@ function GameScreen({ route }) {
             Animated.sequence([
                 Animated.timing(fadeAnim, {
                     toValue: 1,    // Fade in to opacity 1
-                    duration: 1000,  // Duration in ms (2 seconds)
+                    duration: 1000,  // Duration in ms
                     useNativeDriver: true,
                 }),
+                Animated.delay(300),  // Short delay at full opacity
                 Animated.timing(fadeAnim, {
-                    toValue: 0.1,    // Fade out to opacity 0
-                    duration: 1000,  // Duration in ms (2 seconds)
+                    toValue: 0,    // Fade out to opacity 0
+                    duration: 1000,  // Duration in ms
                     useNativeDriver: true,
                 }),
+                Animated.delay(300)   // Short delay at zero opacity
             ])
         );
 
@@ -181,7 +183,7 @@ function GameScreen({ route }) {
         } else if (timeLeft === 0) {
             clearInterval(timer);
             setModalVisible(true);
-        } 
+        }
 
         return () => clearInterval(timer);
     }, [timeLeft]);
@@ -237,6 +239,9 @@ function GameScreen({ route }) {
                     </View>
                 </View>
 
+
+
+
                 <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
                     <FontAwesomeIcon icon={faHandPointer} size={32} />
 
@@ -247,50 +252,52 @@ function GameScreen({ route }) {
 
 
 
-            {!isLoading && (
-                <>
-                    <CategoryReveal
-                        visible={categoryModalVisible}
-                        onTap={() => {
-                            setCategoryModalVisible(false)
+            {
+                !isLoading && (
+                    <>
+                        <CategoryReveal
+                            visible={categoryModalVisible}
+                            onTap={() => {
+                                setCategoryModalVisible(false)
 
-                            setAwaitModalVisible(true)
-                        }} categoryName={categoryName} currentRound={currentRound}
-                    />
-
-                    <AwaitsTapModal
-                        visible={awaitModalVisible}
-                        onTap={() => {
-                            setAwaitModalVisible(false);
-                            setTimeLeft(seconds || 3);
-                            setPlayingNow(true);
-                        }}
-                        playerName={playerNames[playerPlaying]}
-                        action={moves[actionPlaying]}
-                        categoryName={categoryName}
-                        playerAsking={playerNames[playerAsking]}
-                        currentRound={currentRound}
-                        roundsCount={roundsCount}
-                    />
-
-                    <FullScreenModal
-                        visible={modalVisible}
-                        onClose={closeModal}
-                        playerName={playerNames[playerPlaying]}
-                        currentRound={currentRound}
-                        roundsCount={roundsCount}
-                    />
-
-                    {statsModalVisible && (
-                        <StatsModal
-                            visible={statsModalVisible}
-                            gameMatrix={gameMatrix}
+                                setAwaitModalVisible(true)
+                            }} categoryName={categoryName} currentRound={currentRound}
                         />
-                    )}
-                </>
-            )}
 
-        </TouchableOpacity>
+                        <AwaitsTapModal
+                            visible={awaitModalVisible}
+                            onTap={() => {
+                                setAwaitModalVisible(false);
+                                setTimeLeft(seconds || 3);
+                                setPlayingNow(true);
+                            }}
+                            playerName={playerNames[playerPlaying]}
+                            action={moves[actionPlaying]}
+                            categoryName={categoryName}
+                            playerAsking={playerNames[playerAsking]}
+                            currentRound={currentRound}
+                            roundsCount={roundsCount}
+                        />
+
+                        <FullScreenModal
+                            visible={modalVisible}
+                            onClose={closeModal}
+                            playerName={playerNames[playerPlaying]}
+                            currentRound={currentRound}
+                            roundsCount={roundsCount}
+                        />
+
+                        {statsModalVisible && (
+                            <StatsModal
+                                visible={statsModalVisible}
+                                gameMatrix={gameMatrix}
+                            />
+                        )}
+                    </>
+                )
+            }
+
+        </TouchableOpacity >
     );
 }
 
@@ -299,13 +306,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: wp('80%'),
-
         flex: 2,
     },
     content: {
-        backgroundColor: '#1D3557',
+        backgroundColor: '#457b9d',
         borderRadius: wp('10%'),
         padding: hp('4.5%'),
+
     },
     main: {
         flex: 1,

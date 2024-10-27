@@ -7,6 +7,7 @@ import {
     View,
     Pressable,
     TextInput,
+    Alert
 } from 'react-native';
 
 import {
@@ -18,13 +19,37 @@ import { useSound } from '../Components/SoundContext';
 function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
-    const { stopBg } = useSound();
+    const { playSound } = useSound();
 
     const handleChangeText = (text, index) => {
         const newPlayers = [...players];
         newPlayers[index] = text;
         setPlayers(newPlayers);
     };
+
+    const moveToGame = () => {
+        // let fistikiExists = players.indexOf('Fistiki')
+        // if (fistikiExists != -1 ){
+        //     const newPlayers = [...players];
+        //     newPlayers[fistikiExists] = '🟢' + '🥜';
+        //     setPlayers(newPlayers);
+        // }
+
+        if (!players.includes('')) {
+            playSound('click')
+            navigation.navigate('Game', {
+                playerNames: players,
+                roundsCount: roundsCount,
+                seconds: seconds,
+            });
+        } else {
+            Alert.alert(
+                'Προσοχή!',
+                'Επιλέξτε όλοι username.',
+                [{'text': 'Ok'}]
+            )
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -43,17 +68,10 @@ function GameNamesScreen({ route, navigation }) {
                     </View>
                 ))}
 
-                <Pressable 
+                <Pressable
                     android_disableSound={true}
                     style={styles.btn}
-                    onPress={() => {
-                        stopBg();
-                        navigation.navigate('Game', {
-                            playerNames: players,
-                            roundsCount: roundsCount,
-                            seconds: seconds,
-                        });
-                    }}
+                    onPress={moveToGame}
                 >
                     <Text style={styles.btnText}>Ας ξεκινήσουμε!</Text>
                 </Pressable>
@@ -68,7 +86,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     content: {
-        flexGrow: 1, 
+        flexGrow: 1,
         alignItems: 'center',
         width: wp('90%'), // Adjust width to 90% of the screen
     },

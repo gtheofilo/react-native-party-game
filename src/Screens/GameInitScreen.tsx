@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Text,
     View,
-
+    Alert
 } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -41,11 +41,21 @@ function GameInitScreen({ navigation }) {
 
     const moveToGameNames = () => {
         playSound('click')
-        navigation.navigate('GameNames', {
-            playersCount: playersCount,
-            roundsCount: roundsCount,
-            seconds: seconds,
-        })
+
+        if (playersCount * roundsCount * seconds === 0) {
+            Alert.alert(
+                'Προσοχή!',
+                'Επιλέξτε όλες τις ρυθμίσεις.',
+                [{ text: 'OK' },]
+            )
+        } else {
+            navigation.navigate('GameNames', {
+                playersCount: playersCount,
+                roundsCount: roundsCount,
+                seconds: seconds,
+            })
+        }
+
     }
 
     return (
