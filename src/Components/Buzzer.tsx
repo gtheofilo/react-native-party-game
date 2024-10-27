@@ -41,11 +41,14 @@ function Buzzer({ onPress, countdown }) {
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
             >
-                {countdown === 4 ? (
-                    <Text style={styles.buzzerText}>Πάμε!</Text>
-                ) : (
-                    <Text style={styles.buzzerText}>{countdown}</Text>
-                )}
+                {
+                    (countdown === 3) ? (
+                        <Text style={styles.buzzerText}>Παίξε!</Text>
+                    ) : (
+                        <Text style={styles.buzzerText}>{countdown + 1}</Text>
+                    )
+                }
+
 
             </TouchableOpacity>
         </Animated.View>

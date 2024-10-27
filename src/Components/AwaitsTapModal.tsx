@@ -33,25 +33,26 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
 
     useEffect(() => {
-        if (beginCountDown && countdown >= 0) {
-            playSound("beep");
-            intervalId.current = setInterval(() => {
-                setCountdown((prev) => {
-                    if (prev > 0) {
-                        playSound("beep");
-                    }
-                    return prev - 1;
-                });
-            }, 1000); // Decrease countdown every second
-        } else if (beginCountDown && countdown === 0) {
-            onTap();
+        intervalId.current = setInterval(
+            () => {
 
-            clearInterval(intervalId.current);
-            setCountdown(4)
-            setBeginCountDown(false)
-        }
+                if (beginCountDown && countdown > 0) {
+                    playSound("beep")
+                    setCountdown((prev) => prev - 1)
+                }
 
-        // Cleanup the interval on unmount or when countdown changes
+                if (beginCountDown && countdown == 0) {
+                    clearInterval(intervalId.current);
+                    setBeginCountDown(false)
+                    setCountdown(3)
+                    console.log('HELLO', beginCountDown)
+                    onTap()
+                }
+            },
+            1000
+        )
+
+
         return () => {
             clearInterval(intervalId.current);
         }
@@ -60,6 +61,8 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
     const startCountDown = () => {
         setBeginCountDown(true)
+        playSound("beep")
+
     };
 
     return (
