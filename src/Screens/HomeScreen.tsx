@@ -1,53 +1,41 @@
-import React from 'react';
-import type { PropsWithChildren } from 'react';
-import {
-    SafeAreaView,
-    Text,
-    StyleSheet,
-    View,
-    Pressable
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaView, Text, StyleSheet, View, Pressable } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { debounce } from 'lodash';
 
-import {
-    heightPercentageToDP as hp,
-    widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-
-import { useSound } from '../Components/SoundContext';
 import BgAnimated from '../Components/BgAnimated';
 
+function HomeScreen({ navigation }) {
 
-type HomeScreenProps = PropsWithChildren<{
-    navigation: any;
-}>;
-
-function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
-
-    const { playSound } = useSound();
-
-    const moveToGameInit = () => {
-        playSound('click');
+    // Define debounced navigation functions only once
+    const debouncedMoveToGameInit = debounce(() => {
         navigation.navigate('GameInit');
-    }
+    }, 100);
 
-    const moveToGameRules = () => {
-        playSound('click');
-        navigation.navigate('GameRules')
-    }
+    const debouncedMoveToGameRules = debounce(() => {
+        navigation.navigate('GameRules');
+    }, 100);
+
+    // Clean up debounce on component unmount to avoid memory leaks
+    useEffect(() => {
+        return () => {
+            debouncedMoveToGameInit.cancel();
+            debouncedMoveToGameRules.cancel();
+        };
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
-            <BgAnimated></BgAnimated>
-
+            <BgAnimated />
             <View style={styles.content}>
                 <Text style={styles.brandName}>Βρές την κάρτα!</Text>
                 <Text style={styles.brandName}>Παιχνίδι Παρέας</Text>
 
-                <Pressable android_disableSound={true} style={styles.btn} onPress={moveToGameInit}>
+                <Pressable android_disableSound={true} style={styles.btn} onPress={debouncedMoveToGameInit}>
                     <Text style={styles.btnText}>ΕΝΑΡΞΗ</Text>
                 </Pressable>
 
-                <Pressable android_disableSound={true} style={styles.btn} onPress={moveToGameRules}>
+                <Pressable android_disableSound={true} style={styles.btn} onPress={debouncedMoveToGameRules}>
                     <Text style={styles.btnText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
                 </Pressable>
             </View>
@@ -79,17 +67,13 @@ const styles = StyleSheet.create({
         marginBottom: hp('2%'),
         borderColor: '#fff',
         borderWidth: hp('0.5%'),
-        // Elevation for Android (creates shadow-like effect)
         elevation: 5,
-        // Gradient-like effect (optional, if you want to simulate lighting from top)
-        backgroundImage: 'linear-gradient(145deg, #D62839, #E63946)',
     },
     btnText: {
         color: '#fff',
         fontSize: hp('2.2%'),
         fontWeight: 'bold',
     },
-
 });
 
-export default HomeScreen;
+export default React.memo(HomeScreen);

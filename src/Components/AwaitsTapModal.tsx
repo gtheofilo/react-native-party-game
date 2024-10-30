@@ -1,17 +1,11 @@
-// FullScreenModal.js
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, View, Text, StyleSheet } from 'react-native';
-import { faUserNinja } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import Sound from 'react-native-sound';
-
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+
 import Buzzer from './Buzzer';
-
-
 import { useSound } from '../Components/SoundContext';
 
 const funnyQuotes = [
@@ -45,7 +39,6 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                     clearInterval(intervalId.current);
                     setBeginCountDown(false)
                     setCountdown(3)
-                    console.log('HELLO', beginCountDown)
                     onTap()
                 }
             },
@@ -61,8 +54,6 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
     const startCountDown = () => {
         setBeginCountDown(true)
-        playSound("beep")
-
     };
 
     return (

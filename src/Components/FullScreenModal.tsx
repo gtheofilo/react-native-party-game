@@ -7,15 +7,14 @@ import {
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 
-const FullScreenModal = ({ visible, onClose, playerName, action, currentRound, roundsCount }) => {
+const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, categoryName }) => {
     return (
         <Modal
             visible={visible}
             transparent={false}
-            animationIn="slideInLeft"
-
         >
             <View style={styles.banner}>
+                <Text style={styles.bannerTitle}>{categoryName}</Text>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
 
@@ -47,6 +46,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: wp('100%'),
         height: hp('100%'),
+    },
+    banner: {
+        backgroundColor: '#E63946',
+        width: wp('100%'),
+        alignItems: 'center',
+        padding: hp('1.5%'),
+    },
+    bannerTitle: {
+        fontSize: hp('3%'),
+        textAlign: 'center',
+        color: '#fdf0d5',
+    },
+    h1: {
+        fontSize: hp('2%'),
+        fontWeight: 'bold',
+        color: '#fdf0d5',
+        textAlign: 'center',
     },
     finished: {
         fontWeight: 'bold',

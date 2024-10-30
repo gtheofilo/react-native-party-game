@@ -19,6 +19,7 @@ const StatsModal = ({ visible, gameMatrix }) => {
     return (
         <Modal visible={visible} animationType="slide">
             <View style={styles.container}>
+
                 <View style={styles.col1}>
 
                     {/* <TouchableOpacity style={styles.no}>

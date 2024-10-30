@@ -14,29 +14,24 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { useSound } from '../Components/SoundContext';
 
 function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
-    const { playSound } = useSound();
 
     const handleChangeText = (text, index) => {
         const newPlayers = [...players];
-        newPlayers[index] = text;
+
+        if (text === 'Fistiki' || text === 'Fystiki' || text === 'Φυστίκι' || text === 'Φυστικι') {
+            newPlayers[index] = '🟢🥜';
+        } else {
+            newPlayers[index] = text;
+        }
         setPlayers(newPlayers);
     };
 
     const moveToGame = () => {
-        // let fistikiExists = players.indexOf('Fistiki')
-        // if (fistikiExists != -1 ){
-        //     const newPlayers = [...players];
-        //     newPlayers[fistikiExists] = '🟢' + '🥜';
-        //     setPlayers(newPlayers);
-        // }
-
         if (!players.includes('')) {
-            playSound('click')
             navigation.navigate('Game', {
                 playerNames: players,
                 roundsCount: roundsCount,
@@ -46,7 +41,7 @@ function GameNamesScreen({ route, navigation }) {
             Alert.alert(
                 'Προσοχή!',
                 'Επιλέξτε όλοι username.',
-                [{'text': 'Ok'}]
+                [{ 'text': 'Ok' }]
             )
         }
     }
@@ -64,6 +59,7 @@ function GameNamesScreen({ route, navigation }) {
                             placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
                             value={player}
                             onChangeText={(text) => handleChangeText(text, index)}
+                            maxLength={10} // Sets the maximum character limit
                         />
                     </View>
                 ))}
@@ -109,7 +105,7 @@ const styles = StyleSheet.create({
         marginBottom: hp('0.5%'), // Space below the label
     },
     input: {
-        height: hp('5%'),
+        height: hp('6%'),
         borderColor: '#e63946',
         color: '#1d3557',
         borderWidth: hp('0.3%'),

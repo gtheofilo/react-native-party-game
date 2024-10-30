@@ -1,61 +1,51 @@
 // FullScreenModal.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
-import {
-    heightPercentageToDP as hp,
-    widthPercentageToDP as wp,
-} from 'react-native-responsive-screen'
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import RandomTextReveal from '../Components/RandomTextReveal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-
 import { faHandPointer } from '@fortawesome/free-solid-svg-icons';
 
+const FADE_DURATION = 1000;
+const FADE_DELAY = 300;
 
-const CategoryReveal = ({ visible, onTap, categoryName = 1, currentRound }) => {
-    const [time, setTime] = useState(2)
-    const [animationFinsihed, setAnimationFinished] = useState(false)
-
-    const fadeAnim = useRef(new Animated.Value(0)).current;  // Initial opacity value: 0
+const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        // Create a loop of fade in and fade out animations with smoother transitions
-        const loopAnimation = Animated.loop(
-            Animated.sequence([
-                Animated.timing(fadeAnim, {
-                    toValue: 1,    // Fade in to opacity 1
-                    duration: 1000,  // Duration in ms
-                    useNativeDriver: true,
-                }),
-                Animated.delay(300),  // Short delay at full opacity
-                Animated.timing(fadeAnim, {
-                    toValue: 0,    // Fade out to opacity 0
-                    duration: 1000,  // Duration in ms
-                    useNativeDriver: true,
-                }),
-                Animated.delay(300)   // Short delay at zero opacity
-            ])
-        );
-    
-        // Start the animation loop
-        loopAnimation.start();
-    
-        // Cleanup animation on component unmount
-        return () => loopAnimation.stop();
-    }, [fadeAnim]);
+        if (visible) {
+            const loopAnimation = Animated.loop(
+                Animated.sequence([
+                    Animated.timing(fadeAnim, {
+                        toValue: 1,
+                        duration: FADE_DURATION,
+                        useNativeDriver: true,
+                    }),
+                    Animated.delay(FADE_DELAY),
+                    Animated.timing(fadeAnim, {
+                        toValue: 0,
+                        duration: FADE_DURATION,
+                        useNativeDriver: true,
+                    }),
+                    Animated.delay(FADE_DELAY),
+                ])
+            );
+            loopAnimation.start();
+            return () => loopAnimation.stop();
+        }
+    }, [visible, fadeAnim]);
 
     return (
-        <Modal visible={visible} animationIn="slideInLeft"
-        >
+        <Modal visible={visible}>
             <TouchableOpacity style={styles.container} onPress={onTap}>
                 <Text style={styles.h1}>ΓΥΡΟΣ {currentRound}</Text>
                 <RandomTextReveal
-                    text={categoryName}   // The text you want to reveal
-                    revealSpeed={200}     // Delay between starting to reveal next letter
-                    scrambleSpeed={50}    // Speed of random letters switching
-                    iterations={5}        // Number of random letter iterations before revealing
+                    text={categoryName}
+                    revealSpeed={200}
+                    scrambleSpeed={50}
+                    iterations={5}
                 />
-
-                <Animated.View style={{ ...styles.fadingContainer, opacity: fadeAnim }}>
+                <Animated.View style={[styles.fadingContainer, { opacity: fadeAnim }]}>
                     <FontAwesomeIcon icon={faHandPointer} size={32} color="black" />
                     <Text style={styles.h2}>Πατήστε εδώ για συνέχεια</Text>
                 </Animated.View>
@@ -69,7 +59,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        rowGap: hp('1%')
+        gap: hp('2%'),
     },
     h1: {
         color: 'black',
@@ -83,9 +73,9 @@ const styles = StyleSheet.create({
     },
     fadingContainer: {
         marginTop: hp('15%'),
-        rowGap: hp('2%'),
         alignItems: 'center',
-    }
+        gap: hp('2%'),
+    },
 });
 
 export default CategoryReveal;
