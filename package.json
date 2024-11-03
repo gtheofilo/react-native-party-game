@@ -1,5 +1,5 @@
 {
-  "name": "Game",
+  "name": "Βρες την Κάρτα: Παιχνίδι Παρέας!",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -21,6 +21,7 @@
     "lodash": "^4.17.21",
     "react": "18.3.1",
     "react-native": "0.75.4",
+    "react-native-google-mobile-ads": "^14.2.5",
     "react-native-keep-awake": "^4.0.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^4.11.0",

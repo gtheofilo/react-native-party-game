@@ -202,7 +202,7 @@ const GameScreen = ({ route }) => {
     };
 
     const uponCategoryReveal = () => {
-        setGameState((prevState) => ({ ...prevState, categoryModalVisible: false, awaitModalVisible: true }));
+        setGameState((prevState) => ({ ...prevState, awaitModalVisible: true, categoryModalVisible: false,  }));
     }
 
     const uponBuzzerTap = () => {

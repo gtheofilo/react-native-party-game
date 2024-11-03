@@ -57,7 +57,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
     };
 
     return (
-        <Modal visible={visible} transparent={false} animationIn="slideInLeft"
+        <Modal visible={visible} transparent={false}
         >
             <View style={styles.banner}>
                 <Text style={styles.bannerTitle}>{categoryName}</Text>

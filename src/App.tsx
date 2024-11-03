@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import mobileAds from 'react-native-google-mobile-ads';
 
 import HomeScreen from './Screens/HomeScreen';
 import GameInitScreen from './Screens/GameInitScreen';
@@ -13,6 +14,14 @@ import { SoundProvider } from './Components/SoundContext';
 
 const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
+
+  useEffect(() => {
+    mobileAds()
+     .initialize()
+     .then((adapterStatuses) => {
+       console.log("adapterStatuses", adapterStatuses);
+     });
+  }, []);
 
   return (
     <SoundProvider>
