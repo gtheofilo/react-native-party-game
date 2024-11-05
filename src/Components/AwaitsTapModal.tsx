@@ -27,6 +27,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
 
 
     useEffect(() => {
+
         intervalId.current = setInterval(
             () => {
 
@@ -86,7 +87,7 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                     </Text>}
                     {action === 'Κάν\'το με ήχο!' && <Text style={styles.hint}>
                         Χρησιμοποίησε την φωνή σου για να περιγράψεις την κάρτα που θα εμφανιστεί.
-                        Μην χρησιμοποιήσεις ομιλία.
+                        Μην χρησιμοποιήσεις λέξεις αλλά μόνο ήχους.
                     </Text>}
                 </View>
 

@@ -1,13 +1,13 @@
 // FullScreenModal.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 
-const StatsModal = ({ visible, gameMatrix }) => {
+const StatsModal = ({ visible, gameMatrix, navigation }) => {
     const [sortedEntries, setSortedEntries] = useState([]);
 
     // Convert the gameMatrix to an array of entries and sort it in descending order based on scores
@@ -22,17 +22,19 @@ const StatsModal = ({ visible, gameMatrix }) => {
 
                 <View style={styles.col1}>
 
-                    {/* <TouchableOpacity style={styles.no}>
-                        <Text style={styles.closeButtonText}>ΟΧΙ</Text>
-                    </TouchableOpacity> */}
+                    <Text style={styles.h2}>Το παιχνίδι τελείωσε!</Text>
 
-                    <Text style={styles.h2}>Συγχαρητήρια. Το παιχνίδι τελείωσε!</Text>
+                    <Text style={styles.h2}>Συγχαρητήρια σε όλους. Δείτε τους πόντους σας παρακάτω.</Text>
 
-                    <Text style={styles.h2}>Απολαύστε τα στατιστικά ή ξεκινήστε από την αρχή.</Text>
-
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('GameRules')}>
+                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Home')}>
                         <Text style={styles.closeButtonText}>ΝΕΟ ΠΑΙΧΝΙΔΙ</Text>
                     </TouchableOpacity>
+
+                    <Image
+                        source={require('../assets/images/trophy.webp')}
+                        style={styles.image}
+                    />
+
 
                 </View>
                 <View style={styles.leaderboard}>
@@ -147,6 +149,10 @@ const styles = StyleSheet.create({
     closeButtonText: {
         color: 'white',
         fontSize: 16,
+    },
+    image: {
+        height: hp('20%'),  // set height for the image
+        resizeMode: 'contain', // other options: 'contain', 'stretch', 'repeat', 'center'
     },
     btn: {
         backgroundColor: '#E63946',

@@ -2,16 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, Text, StyleSheet, View, Pressable, Platform } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { debounce } from 'lodash';
-import { BannerAd, BannerAdSize, TestIds, useForeground } from 'react-native-google-mobile-ads';
+import {BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 
 import BgAnimated from '../Components/BgAnimated';
 
-const adUnitId = "ca-app-pub-2209521706517983/4199716068";
 
 function HomeScreen({ navigation }) {
-    const bannerRef = useRef<BannerAd>(null);
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
 
-    // Define debounced navigation functions only once
     const debouncedMoveToGameInit = debounce(() => {
         navigation.navigate('GameInit');
     }, 100);
@@ -22,14 +20,7 @@ function HomeScreen({ navigation }) {
 
     const handleAdFailedToLoad = (error) => {
         console.error('Banner ad failed to load:', error);
-        if (error.code === 'NO_FILL') {
-            // Retry loading the ad after a delay
-            setTimeout(() => {
-                bannerRef.current?.load(); // Assuming you have a ref to reload
-            }, 3000); // Retry after 3 seconds
-        }
     };
-    
 
     // Clean up debounce on component unmount to avoid memory leaks
     useEffect(() => {
@@ -39,15 +30,24 @@ function HomeScreen({ navigation }) {
         };
     }, []);
 
-    useForeground(() => {
-        Platform.OS === 'ios' && bannerRef.current?.load();
-    })
+
 
     return (
         <SafeAreaView style={styles.container}>
             <BgAnimated />
-            <BannerAd ref={bannerRef} unitId={TestIds.BANNER} size={BannerAdSize.BANNER}
-                onAdFailedToLoad={handleAdFailedToLoad} // Attach error handler
+
+            <BannerAd
+                unitId={adUnitId} // Set Ad Unit ID
+                size={BannerAdSize.FULL_BANNER}
+                requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                }}
+                onAdLoaded={() => {
+                    console.log('Ad loaded');
+                }}
+                onAdFailedToLoad={(error) => {
+                    console.error('Ad failed to load', error);
+                }}
             />
 
             <View style={styles.content}>
@@ -61,6 +61,7 @@ function HomeScreen({ navigation }) {
                 <Pressable android_disableSound={true} style={styles.btn} onPress={debouncedMoveToGameRules}>
                     <Text style={styles.btnText}>ΟΔΗΓΟΣ ΠΑΙΧΝΙΔΙΟΥ</Text>
                 </Pressable>
+
             </View>
         </SafeAreaView>
     );

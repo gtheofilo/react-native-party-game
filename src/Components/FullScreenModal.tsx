@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-screen'
 
 const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, categoryName }) => {
+
     return (
         <Modal
             visible={visible}
@@ -22,7 +23,7 @@ const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, category
 
                 <View style={styles.col}>
 
-                    <Text style={styles.finished}>Βρήκες την σωστή κάρτα;</Text>
+                    <Text style={styles.finished}>Βρήκες την κάρτα;</Text>
                     <View style={[{ flexDirection: 'row', columnGap: wp('3%') },]}>
 
                         <TouchableOpacity style={styles.yes} onPress={() => { onClose(1) }}>

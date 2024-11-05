@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
         width: 1200,
         height: 1200,
         top: 0,
-        opacity: 0.7,
+        opacity: 0.6,
         zIndex: -1, // Move the background behind the content
     }
 })

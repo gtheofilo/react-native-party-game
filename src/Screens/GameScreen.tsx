@@ -25,7 +25,7 @@ const pickRandomKey = (obj) => {
     return keys[Math.floor(Math.random() * keys.length)];
 };
 
-const GameScreen = ({ route }) => {
+const GameScreen = ({ navigation, route }) => {
     const { playerNames, roundsCount, seconds } = route.params;
 
     const [gameState, setGameState] = useState({
@@ -173,15 +173,20 @@ const GameScreen = ({ route }) => {
 
     const closeModal = (answer) => {
         if (answer === 1) {
+            playSound('correct')
             setGameState((prevState) => {
                 const updatedMatrix = { ...prevState.gameMatrix };
                 updatedMatrix[playerNames[prevState.playerPlaying]] += 1.5;
                 updatedMatrix[playerNames[prevState.playerAsking]] += 0.5;
                 return { ...prevState, gameMatrix: updatedMatrix };
             });
+        } else {
+            playSound('wrong')
         }
+
         setGameState((prevState) => ({ ...prevState, modalVisible: false }));
-        switchPlayer();
+        switchPlayer()
+
     };
 
     const handleDoubleTap = () => {
@@ -202,7 +207,7 @@ const GameScreen = ({ route }) => {
     };
 
     const uponCategoryReveal = () => {
-        setGameState((prevState) => ({ ...prevState, awaitModalVisible: true, categoryModalVisible: false,  }));
+        setGameState((prevState) => ({ ...prevState, awaitModalVisible: true, categoryModalVisible: false, }));
     }
 
     const uponBuzzerTap = () => {
@@ -271,6 +276,7 @@ const GameScreen = ({ route }) => {
                         <StatsModal
                             visible={gameState.statsModalVisible}
                             gameMatrix={gameState.gameMatrix}
+                            navigation={navigation}
                         />
                     )}
                 </>

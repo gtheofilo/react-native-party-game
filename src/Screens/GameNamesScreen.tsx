@@ -15,9 +15,13 @@ import {
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
+
+
 function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
 
     const handleChangeText = (text, index) => {
         const newPlayers = [...players];
@@ -48,6 +52,19 @@ function GameNamesScreen({ route, navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <BannerAd
+                unitId={adUnitId} // Set Ad Unit ID
+                size={BannerAdSize.FULL_BANNER}
+                requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                }}
+                onAdLoaded={() => {
+                    console.log('Ad loaded');
+                }}
+                onAdFailedToLoad={(error) => {
+                    console.error('Ad failed to load', error);
+                }}
+            />
             <ScrollView contentContainerStyle={styles.content}>
                 <Text style={styles.h1}>Επιλέξτε Username</Text>
 

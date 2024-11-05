@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, Text, StyleSheet, Pressable, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
+
 import { debounce } from 'lodash';
 
-import BgAnimated from '../Components/BgAnimated';
-
 function GameRules({ navigation }) {
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
 
     // Define the debounced function once
     const debouncedMoveToHome = debounce(() => {
@@ -21,7 +22,19 @@ function GameRules({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <BgAnimated />
+            <BannerAd
+                unitId={adUnitId} // Set Ad Unit ID
+                size={BannerAdSize.FULL_BANNER}
+                requestOptions={{
+                    requestNonPersonalizedAdsOnly: true,
+                }}
+                onAdLoaded={() => {
+                    console.log('Ad loaded');
+                }}
+                onAdFailedToLoad={(error) => {
+                    console.error('Ad failed to load', error);
+                }}
+            />
             <View style={styles.content}>
                 <Text style={styles.textHeader}>Κανόνες Παιχνιδιού</Text>
                 <Text style={styles.text}>
@@ -76,7 +89,6 @@ const styles = StyleSheet.create({
         flex: 1,
         rowGap: hp('3%'),
         width: wp('100%'),
-        zIndex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },

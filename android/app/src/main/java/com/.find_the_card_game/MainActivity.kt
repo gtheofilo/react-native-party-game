@@ -1,4 +1,4 @@
-package com.game
+package com.find_the_card_game
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

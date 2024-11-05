@@ -5,11 +5,12 @@ import Sound from 'react-native-sound';
 
 const SoundContext = createContext();
 const sounds = {
-    "background": require("../assets/sounds/overwerk.mp3"),
-    "click": require("../assets/sounds/switch1.mp3"),
     "countdown": require("../assets/sounds/countdown.mp3"),
     "beep": require('../assets/sounds/beep.mp3'),
+    "correct": require('../assets/sounds/correct.mp3'),
+    "wrong": require('../assets/sounds/wrong.mp3')
 }
+
 export const SoundProvider = ({ children }) => {
     const soundRef = useRef(null); // Create a ref for sound
     const bgRef = useRef(null);

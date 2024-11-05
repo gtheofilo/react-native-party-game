@@ -2,10 +2,6 @@
   "name": "Game",
   "displayName": "Game",
   "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-2209521706517983~5105603627",
-    "delay_app_measurement_init": false,
-    "optimize_initialization": true,
-    "optimize_ad_loading": true,
-    "user_tracking_usage_description": "This identifier will be used to deliver personalized ads to you."
+    "android_app_id": "ca-app-pub-2209521706517983~5105603627"
   }
 }
