@@ -17,20 +17,15 @@ import {
 
 import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 
-
 function GameNamesScreen({ route, navigation }) {
     const { playersCount, roundsCount, seconds } = route.params;
     const [players, setPlayers] = useState(Array(playersCount).fill(''));
-    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with actual Ad Unit ID in production
 
     const handleChangeText = (text, index) => {
         const newPlayers = [...players];
-
-        if (text === 'Fistiki' || text === 'Fystiki' || text === 'Φυστίκι' || text === 'Φυστικι') {
-            newPlayers[index] = '🟢🥜';
-        } else {
-            newPlayers[index] = text;
-        }
+        newPlayers[index] = 
+            ['Fistiki', 'Fystiki', 'Φυστίκι', 'Φυστικι'].includes(text) ? '🟢🥜' : text;
         setPlayers(newPlayers);
     };
 
@@ -38,36 +33,23 @@ function GameNamesScreen({ route, navigation }) {
         if (!players.includes('')) {
             navigation.navigate('Game', {
                 playerNames: players,
-                roundsCount: roundsCount,
-                seconds: seconds,
+                roundsCount,
+                seconds,
             });
         } else {
             Alert.alert(
                 'Προσοχή!',
                 'Επιλέξτε όλοι username.',
-                [{ 'text': 'Ok' }]
-            )
+                [{ text: 'Ok' }]
+            );
         }
-    }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
-            <BannerAd
-                unitId={adUnitId} // Set Ad Unit ID
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: true,
-                }}
-                onAdLoaded={() => {
-                    console.log('Ad loaded');
-                }}
-                onAdFailedToLoad={(error) => {
-                    console.error('Ad failed to load', error);
-                }}
-            />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
             <ScrollView contentContainerStyle={styles.content}>
                 <Text style={styles.h1}>Επιλέξτε Username</Text>
-
                 {players.map((player, index) => (
                     <View key={index} style={styles.inputContainer}>
                         <Text style={styles.h2}>Παίχτης {index + 1}</Text>
@@ -76,16 +58,11 @@ function GameNamesScreen({ route, navigation }) {
                             placeholder={`Γράψε το username του Παίχτη ${index + 1}`}
                             value={player}
                             onChangeText={(text) => handleChangeText(text, index)}
-                            maxLength={10} // Sets the maximum character limit
+                            maxLength={10}
                         />
                     </View>
                 ))}
-
-                <Pressable
-                    android_disableSound={true}
-                    style={styles.btn}
-                    onPress={moveToGame}
-                >
+                <Pressable style={styles.btn} onPress={moveToGame}>
                     <Text style={styles.btnText}>Ας ξεκινήσουμε!</Text>
                 </Pressable>
             </ScrollView>
@@ -96,18 +73,17 @@ function GameNamesScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
     },
     content: {
-        flexGrow: 1,
         alignItems: 'center',
-        width: wp('90%'), // Adjust width to 90% of the screen
+        width: wp('100%'), 
+        flexGrow: 1,
     },
     inputContainer: {
-        rowGap: hp('1%'),
+        gap: hp('1%'),
         alignItems: 'flex-start',
-        width: '100%', // Full width to prevent overflow
-        marginBottom: hp('2%'), // Added margin to create space between inputs
+        width: wp('95%'), 
+        marginBottom: hp('2%'),
     },
     h1: {
         fontWeight: 'bold',
@@ -118,8 +94,8 @@ const styles = StyleSheet.create({
     },
     h2: {
         fontSize: hp('2%'),
-        textAlign: 'left', // Align text to the left for better readability
-        marginBottom: hp('0.5%'), // Space below the label
+        textAlign: 'left',
+        marginBottom: hp('0.5%'),
     },
     input: {
         height: hp('6%'),
@@ -128,14 +104,14 @@ const styles = StyleSheet.create({
         borderWidth: hp('0.3%'),
         paddingHorizontal: wp('2%'),
         borderRadius: hp('1%'),
-        width: '100%', // Keep input full width within inputContainer
+        width: '100%',
     },
     btn: {
         marginTop: 'auto',
         backgroundColor: '#E63946',
         paddingVertical: hp('2%'),
         borderRadius: hp('2%'),
-        width: wp('70%'), // Keep button width the same
+        width: wp('70%'),
         alignItems: 'center',
         marginBottom: hp('2%'),
         borderColor: '#fff',
@@ -148,6 +124,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
 
 export default GameNamesScreen;

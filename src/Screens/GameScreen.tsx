@@ -14,6 +14,9 @@ import {
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
+
 const moves = {
     'whoami': 'Ναί, Όχι, Περίπου',
     'sound': 'Κάν\'το με ήχο!',
@@ -27,6 +30,7 @@ const pickRandomKey = (obj) => {
 
 const GameScreen = ({ navigation, route }) => {
     const { playerNames, roundsCount, seconds } = route.params;
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with actual Ad Unit ID in production
 
     const [gameState, setGameState] = useState({
         currentRound: 1,
@@ -115,6 +119,9 @@ const GameScreen = ({ navigation, route }) => {
                 awaitModalVisible: true,
             }));
 
+            setGameState((prevState) => ({ ...prevState, modalVisible: false }));
+
+
         } else {
             if (currentRound < roundsCount) {
                 delete data.challenges[gameState.categoryName];
@@ -135,11 +142,17 @@ const GameScreen = ({ navigation, route }) => {
                     categoryName: selectedCategory
                 }));
 
+                setGameState((prevState) => ({ ...prevState, modalVisible: false }));
+
+
             } else {
                 setGameState((prevState) => ({
                     ...prevState,
                     statsModalVisible: true,
                 }));
+
+                setGameState((prevState) => ({ ...prevState, modalVisible: false }));
+
             }
         }
     }
@@ -164,12 +177,13 @@ const GameScreen = ({ navigation, route }) => {
             }
         } else if (gameState.timeLeft === 0) {
             clearInterval(timer);
-            stopSound();
             setGameState((prevState) => ({ ...prevState, modalVisible: true }));
         }
 
-        return () => clearInterval(timer);
-    }, [gameState.timeLeft, playSound, stopSound]);
+        return () => {
+            clearInterval(timer);
+        }
+    }, [gameState.timeLeft]);
 
     const closeModal = (answer) => {
         if (answer === 1) {
@@ -184,7 +198,6 @@ const GameScreen = ({ navigation, route }) => {
             playSound('wrong')
         }
 
-        setGameState((prevState) => ({ ...prevState, modalVisible: false }));
         switchPlayer()
 
     };
@@ -192,7 +205,7 @@ const GameScreen = ({ navigation, route }) => {
     const handleDoubleTap = () => {
         const currentTime = Date.now();
         const DOUBLE_TAP_DELAY = 300;
-
+        stopSound()
         if (gameState.lastTap && (currentTime - gameState.lastTap) < DOUBLE_TAP_DELAY && gameState.playingNow) {
             setGameState((prevState) => ({
                 ...prevState,
@@ -215,73 +228,79 @@ const GameScreen = ({ navigation, route }) => {
     }
 
     return (
-        <TouchableOpacity
-            style={{ flex: 1, alignItems: 'center' }}
-            onPress={handleDoubleTap}
-            activeOpacity={1}
-        >
-            <View style={styles.banner}>
-                <Text style={styles.bannerTitle}>{gameState.categoryName}</Text>
-                <Text style={styles.h1}>Γύρος {gameState.currentRound} από {roundsCount}</Text>
-            </View>
-            <View style={styles.main}>
-                <View style={styles.time}>
-                    <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
-                    <Text style={styles.title12}>{gameState.timeLeft}</Text>
+        <View style={{ flex: 1 }}>
+            <TouchableOpacity
+                style={{ flex: 1, alignItems: 'center' }}
+                onPress={handleDoubleTap}
+                activeOpacity={1}
+            >
+                <View style={styles.banner}>
+                    <Text style={styles.bannerTitle}>{gameState.categoryName}</Text>
+                    <Text style={styles.h1}>Γύρος {gameState.currentRound} από {roundsCount}</Text>
                 </View>
-
-                <View style={styles.card}>
-                    <View style={styles.content}>
-                        <Text style={styles.title1}>{gameState.challenge}</Text>
+                <View style={styles.main}>
+                    <View style={styles.time}>
+                        <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
+                        <Text style={styles.title12}>{gameState.timeLeft}</Text>
                     </View>
+
+                    <View style={styles.card}>
+                        <View style={styles.content}>
+                            <Text style={styles.title1}>{gameState.challenge}</Text>
+                        </View>
+                    </View>
+
+                    <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
+                        <FontAwesomeIcon icon={faHandPointer} size={32} />
+                        <Text style={styles.title12}>Double-Tap, αν βρέθηκε η λέξη</Text>
+                    </Animated.View>
+
                 </View>
 
-                <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
-                    <FontAwesomeIcon icon={faHandPointer} size={32} />
-                    <Text style={styles.title12}>Double-Tap, αν βρέθηκε η λέξη</Text>
-                </Animated.View>
-            </View>
-
-            {!gameState.isLoading && (
-                <>
-                    <CategoryReveal
-                        visible={gameState.categoryModalVisible}
-                        onTap={uponCategoryReveal}
-                        categoryName={gameState.categoryName}
-                        currentRound={gameState.currentRound}
-                    />
-
-                    <AwaitsTapModal
-                        visible={gameState.awaitModalVisible}
-                        onTap={uponBuzzerTap}
-                        playerName={playerNames[gameState.playerPlaying]}
-                        action={moves[gameState.actionPlaying]}
-                        categoryName={gameState.categoryName}
-                        playerAsking={playerNames[gameState.playerAsking]}
-                        currentRound={gameState.currentRound}
-                        roundsCount={roundsCount}
-                    />
-
-                    <FullScreenModal
-                        visible={gameState.modalVisible}
-                        onClose={closeModal}
-                        playerName={playerNames[gameState.playerPlaying]}
-                        currentRound={gameState.currentRound}
-                        roundsCount={roundsCount}
-                        categoryName={gameState.categoryName}
-
-                    />
-
-                    {gameState.statsModalVisible && (
-                        <StatsModal
-                            visible={gameState.statsModalVisible}
-                            gameMatrix={gameState.gameMatrix}
-                            navigation={navigation}
+                {!gameState.isLoading && (
+                    <>
+                        <CategoryReveal
+                            visible={gameState.categoryModalVisible}
+                            onTap={uponCategoryReveal}
+                            categoryName={gameState.categoryName}
+                            currentRound={gameState.currentRound}
                         />
-                    )}
-                </>
-            )}
-        </TouchableOpacity>
+
+                        <AwaitsTapModal
+                            visible={gameState.awaitModalVisible}
+                            onTap={uponBuzzerTap}
+                            playerName={playerNames[gameState.playerPlaying]}
+                            action={moves[gameState.actionPlaying]}
+                            categoryName={gameState.categoryName}
+                            playerAsking={playerNames[gameState.playerAsking]}
+                            currentRound={gameState.currentRound}
+                            roundsCount={roundsCount}
+                        />
+
+                        <FullScreenModal
+                            visible={gameState.modalVisible}
+                            onClose={closeModal}
+                            playerName={playerNames[gameState.playerPlaying]}
+                            currentRound={gameState.currentRound}
+                            roundsCount={roundsCount}
+                            categoryName={gameState.categoryName}
+
+                        />
+
+                        {gameState.statsModalVisible && (
+                            <StatsModal
+                                visible={gameState.statsModalVisible}
+                                gameMatrix={gameState.gameMatrix}
+                                navigation={navigation}
+                            />
+                        )}
+                    </>
+                )}
+
+
+            </TouchableOpacity>
+            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+        </View>
     );
 };
 

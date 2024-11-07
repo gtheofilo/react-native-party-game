@@ -1,13 +1,19 @@
 // FullScreenModal.js
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 
+const quotes = [
+    'Εσείς πρέπει να είστε αχτύπητο δίδυμo...😂',
+    'Δεν έχω ξανά δει τέτοια συνεργασία 😂'
+]
 const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, categoryName }) => {
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with your actual Ad Unit ID for production
 
     return (
         <Modal
@@ -18,6 +24,7 @@ const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, category
                 <Text style={styles.bannerTitle}>{categoryName}</Text>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
+            
 
             <View style={styles.container}>
 
@@ -37,16 +44,21 @@ const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, category
 
                 </View>
             </View>
+            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+
         </Modal>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
         justifyContent: 'center',
-        width: wp('100%'),
-        height: hp('100%'),
+        flex: 1,
+    },
+    quote: {
+        fontFamily: 'Mynerve-Regular',
+        fontSize: hp('2.5%'),
+        color: 'black',
     },
     banner: {
         backgroundColor: '#E63946',

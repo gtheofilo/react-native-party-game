@@ -1,23 +1,29 @@
 // FullScreenModal.js
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
 
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
+
+
 const StatsModal = ({ visible, gameMatrix, navigation }) => {
     const [sortedEntries, setSortedEntries] = useState([]);
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with actual Ad Unit ID in production
 
     // Convert the gameMatrix to an array of entries and sort it in descending order based on scores
     useEffect(() => {
         const entries = Object.entries(gameMatrix).sort((a, b) => b[1] - a[1]);
         setSortedEntries(entries);
-    }, [gameMatrix]); // Re-run effect when gameMatrix changes
+    }, []);
 
     return (
-        <Modal visible={visible} animationType="slide">
+        <Modal visible={visible}>
+            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+
             <View style={styles.container}>
 
                 <View style={styles.col1}>
@@ -43,30 +49,34 @@ const StatsModal = ({ visible, gameMatrix, navigation }) => {
                         <Text>Παίχτης</Text>
                         <Text>Score</Text>
                     </View>
-                    {sortedEntries.map(([player, score], index) => (
-                        <View key={player} style={styles.row}>
-                            <Text style={[
-                                index === 0 && styles.top,
-                                index === 1 && styles.second,
-                                index === 2 && styles.third,
-                                index > 2 && styles.sample
-                            ]}>
-                                {index + 1}. {player}
-                            </Text>
-                            <Text style={[
-                                index === 0 && styles.top,
-                                index === 1 && styles.second,
-                                index === 2 && styles.third,
-                                index > 2 && styles.sample
 
-                            ]}>
-                                {score}
-                            </Text>
-                        </View>
-                    ))}
+                    <ScrollView contentContainerStyle={styles.content}>
+                        {sortedEntries.map(([player, score], index) => (
+                            <View key={player} style={styles.row}>
+                                <Text style={[
+                                    index === 0 && styles.top,
+                                    index === 1 && styles.second,
+                                    index === 2 && styles.third,
+                                    index > 2 && styles.sample
+                                ]}>
+                                    {index + 1}. {player}
+                                </Text>
+                                <Text style={[
+                                    index === 0 && styles.top,
+                                    index === 1 && styles.second,
+                                    index === 2 && styles.third,
+                                    index > 2 && styles.sample
+
+                                ]}>
+                                    {score}
+                                </Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+
                 </View>
             </View>
-        </Modal>
+        </Modal >
     );
 };
 
@@ -84,15 +94,16 @@ const styles = StyleSheet.create({
         height: hp('50%'),
         width: wp('95%'),
         rowGap: hp('2%')
-
     },
     h2: {
         fontSize: hp('2%'),
         fontWeight: 'bold',
         color: '#457B9D',
-
     },
-
+    content: {
+        alignItems: 'center',
+        width: wp('100%'), 
+    },
     leaderboard: {
         backgroundColor: 'white',
         borderTopLeftRadius: hp('5%'),
@@ -100,18 +111,10 @@ const styles = StyleSheet.create({
         width: wp('100%'),
         height: hp('50%'),
         paddingTop: hp('3%'),
-        paddingBottom: hp('30%'),
+        // paddingBottom: hp('30%'),
         alignItems: 'center',
         rowGap: hp('1.5%'),
         shadowColor: '#000', // Shadow color
-        shadowOffset: {
-            width: 0, // Horizontal offset
-            height: 2, // Vertical offset
-        },
-        shadowOpacity: 0.25, // Shadow opacity
-        shadowRadius: 3.5, // Shadow blur radius
-
-        // Shadow for Android
         elevation: 5, // Elevation level
     },
     row: {

@@ -16,7 +16,7 @@ import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads'
 
 function GameInitScreen({ navigation }) {
     const [settings, setSettings] = useState({ playersCount: 0, roundsCount: 0, seconds: 0 });
-    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with your actual Ad Unit ID for production
 
     const handleChange = (key, value) => {
         setSettings(prev => ({ ...prev, [key]: value }));
@@ -43,15 +43,6 @@ function GameInitScreen({ navigation }) {
             <BannerAd
                 unitId={adUnitId} // Set Ad Unit ID
                 size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: true,
-                }}
-                onAdLoaded={() => {
-                    console.log('Ad loaded');
-                }}
-                onAdFailedToLoad={(error) => {
-                    console.error('Ad failed to load', error);
-                }}
             />
             <View style={styles.content}>
                 <Text style={styles.h1}>Ρυθμίσεις Παιχνιδιού</Text>

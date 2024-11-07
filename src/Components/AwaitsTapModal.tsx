@@ -4,6 +4,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from 'react-native-responsive-screen'
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 
 import Buzzer from './Buzzer';
 import { useSound } from '../Components/SoundContext';
@@ -23,34 +24,31 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
     const [beginCountDown, setBeginCountDown] = useState(false);
     const intervalId = useRef(null);
     const { playSound } = useSound();
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with your actual Ad Unit ID for production
 
 
 
     useEffect(() => {
-
-        intervalId.current = setInterval(
-            () => {
-
-                if (beginCountDown && countdown > 0) {
-                    playSound("beep")
-                    setCountdown((prev) => prev - 1)
-                }
-
-                if (beginCountDown && countdown == 0) {
-                    clearInterval(intervalId.current);
-                    setBeginCountDown(false)
-                    setCountdown(3)
-                    onTap()
-                }
-            },
-            1000
-        )
-
-
-        return () => {
-            clearInterval(intervalId.current);
+        if (beginCountDown) {
+            intervalId.current = setInterval(() => {
+                setCountdown((prevCountdown) => {
+                    if (prevCountdown > 0) {
+                        playSound("beep");
+                        return prevCountdown - 1;
+                    } else {
+                        clearInterval(intervalId.current);
+                        setBeginCountDown(false);
+                        setCountdown(3);
+                        onTap();
+                        return prevCountdown;
+                    }
+                });
+            }, 1000);
         }
-    }, [beginCountDown, countdown]);
+    
+        return () => clearInterval(intervalId.current);
+    }, [beginCountDown]);
+    
 
 
     const startCountDown = () => {
@@ -94,6 +92,11 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                 <Buzzer onPress={startCountDown} countdown={countdown}></Buzzer>
                 <View style={[{ height: hp('1%') }]}></View>
             </View>
+            <BannerAd
+                unitId={adUnitId} // Set Ad Unit ID
+                size={BannerAdSize.FULL_BANNER}
+
+            />
         </Modal>
     );
 };

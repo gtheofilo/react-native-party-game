@@ -5,12 +5,14 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import RandomTextReveal from '../Components/RandomTextReveal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHandPointer } from '@fortawesome/free-solid-svg-icons';
+import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 
 const FADE_DURATION = 1000;
 const FADE_DELAY = 300;
 
 const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with actual Ad Unit ID in production
 
     useEffect(() => {
         if (visible) {
@@ -37,6 +39,7 @@ const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) =>
 
     return (
         <Modal visible={visible}>
+
             <TouchableOpacity style={styles.container} onPress={onTap}>
                 <Text style={styles.h1}>ΓΥΡΟΣ {currentRound}</Text>
                 <RandomTextReveal
@@ -50,6 +53,8 @@ const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) =>
                     <Text style={styles.h2}>Πατήστε εδώ για συνέχεια</Text>
                 </Animated.View>
             </TouchableOpacity>
+            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+
         </Modal>
     );
 };

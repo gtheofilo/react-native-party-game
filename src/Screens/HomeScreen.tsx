@@ -2,13 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, Text, StyleSheet, View, Pressable, Platform } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { debounce } from 'lodash';
-import {BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
-
+import { GAMBannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import BgAnimated from '../Components/BgAnimated';
 
 
 function HomeScreen({ navigation }) {
-    const adUnitId = __DEV__ ? TestIds.BANNER : 'your-ad-unit-id'; // Replace with your actual Ad Unit ID for production
+    const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with your actual Ad Unit ID for production
 
     const debouncedMoveToGameInit = debounce(() => {
         navigation.navigate('GameInit');
@@ -36,19 +35,13 @@ function HomeScreen({ navigation }) {
         <SafeAreaView style={styles.container}>
             <BgAnimated />
 
-            <BannerAd
-                unitId={adUnitId} // Set Ad Unit ID
-                size={BannerAdSize.FULL_BANNER}
-                requestOptions={{
-                    requestNonPersonalizedAdsOnly: true,
-                }}
-                onAdLoaded={() => {
-                    console.log('Ad loaded');
-                }}
-                onAdFailedToLoad={(error) => {
-                    console.error('Ad failed to load', error);
-                }}
-            />
+            {/* <GAMBannerAd
+                unitId={adUnitId}
+                sizes={[BannerAdSize.FULL_BANNER]}
+
+            /> */}
+
+
 
             <View style={styles.content}>
                 <Text style={styles.brandName}>Βρές την κάρτα!</Text>
@@ -70,6 +63,11 @@ function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    ad: {
+        width: '10%',
+        backgroundColor: 'red',
+
     },
     content: {
         flex: 1,
