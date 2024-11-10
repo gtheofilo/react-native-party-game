@@ -23,6 +23,20 @@ const moves = {
     'gestures': 'Παντομίμα',
 };
 
+const shuffleArray = (array) => {
+    // Create a shallow copy to avoid modifying the original array
+    const shuffledArray = [...array];
+
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        // Pick a random index from 0 to i
+        const j = Math.floor(Math.random() * (i + 1));
+        // Swap elements at i and j
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+
+    return shuffledArray;
+};
+
 const pickRandomKey = (obj) => {
     const keys = Object.keys(obj);
     return keys[Math.floor(Math.random() * keys.length)];
@@ -30,6 +44,7 @@ const pickRandomKey = (obj) => {
 
 const GameScreen = ({ navigation, route }) => {
     const { playerNames, roundsCount, seconds } = route.params;
+    const [shuffledPlayers, setShuffledPlayers] = useState('');
     const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with actual Ad Unit ID in production
 
     const [gameState, setGameState] = useState({
@@ -98,18 +113,44 @@ const GameScreen = ({ navigation, route }) => {
             actionPlaying: selectedMoveKey,
             challenge: selectedChallenge,
         }));
+
+        setShuffledPlayers(playerNames)
     }, [playerNames]);
 
-    const switchPlayer = () => {
+    const switchPlayer = async () => {
         const { playerPlaying, currentRound } = gameState;
 
-        if (playerPlaying + 1 < playerNames.length) {
-            delete data.challenges[gameState.categoryName][gameState.actionPlaying][gameState.challenge];
+        // Helper function to delete a specific challenge or category, returning a Promise
+        const deleteChallengeOrCategory = (categoryName, actionKey, challenge) => {
+            return new Promise((resolve) => {
+                if (challenge) {
+                    // Delete specific challenge
 
+                    if (data.challenges[categoryName][actionKey] == 1) {
+                        delete data.challenges[categoryName][actionKey];
+
+                    } else {
+                        delete data.challenges[categoryName][actionKey][challenge];
+                    }
+                } else {
+                    // Delete entire category
+                    delete data.challenges[categoryName];
+                }
+                resolve();
+            });
+        };
+
+        // If there are more players in this round
+        if (playerPlaying + 1 < playerNames.length) {
+            // Delete the current challenge and wait for completion
+            await deleteChallengeOrCategory(gameState.categoryName, gameState.actionPlaying, gameState.challenge);
+
+            // Select the next move and challenge
             const selectedMoveKey = pickRandomKey(data.challenges[gameState.categoryName]);
             const challengeIndex = Math.floor(Math.random() * data.challenges[gameState.categoryName][selectedMoveKey].length);
             const selectedChallenge = data.challenges[gameState.categoryName][selectedMoveKey][challengeIndex];
 
+            // Update the game state for the next player
             setGameState((prevState) => ({
                 ...prevState,
                 playerPlaying: prevState.playerPlaying + 1,
@@ -119,18 +160,22 @@ const GameScreen = ({ navigation, route }) => {
                 awaitModalVisible: true,
             }));
 
+            // Close the modal after updating
             setGameState((prevState) => ({ ...prevState, modalVisible: false }));
 
-
         } else {
+            // If all players have played, check if there are more rounds
             if (currentRound < roundsCount) {
-                delete data.challenges[gameState.categoryName];
+                // Delete the current category and wait for completion
+                await deleteChallengeOrCategory(gameState.categoryName);
 
+                // Select a new category, move, and challenge
                 const selectedCategory = pickRandomKey(data.challenges);
                 const selectedMoveKey = pickRandomKey(data.challenges[selectedCategory]);
                 const challengeIndex = Math.floor(Math.random() * data.challenges[selectedCategory][selectedMoveKey].length);
                 const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
 
+                // Update the game state for the next round
                 setGameState((prevState) => ({
                     ...prevState,
                     currentRound: prevState.currentRound + 1,
@@ -142,20 +187,26 @@ const GameScreen = ({ navigation, route }) => {
                     categoryName: selectedCategory
                 }));
 
+                // Close the modal after updating
                 setGameState((prevState) => ({ ...prevState, modalVisible: false }));
 
+                if (shuffledPlayers.length > 2) {
+                    setShuffledPlayers(shuffleArray(shuffledPlayers))
+                }
 
             } else {
+                // If no more rounds, show stats modal
                 setGameState((prevState) => ({
                     ...prevState,
                     statsModalVisible: true,
                 }));
 
+                // Close the modal
                 setGameState((prevState) => ({ ...prevState, modalVisible: false }));
-
             }
         }
-    }
+    };
+
 
     useEffect(() => {
         KeepAwake.activate();
@@ -190,8 +241,8 @@ const GameScreen = ({ navigation, route }) => {
             playSound('correct')
             setGameState((prevState) => {
                 const updatedMatrix = { ...prevState.gameMatrix };
-                updatedMatrix[playerNames[prevState.playerPlaying]] += 1.5;
-                updatedMatrix[playerNames[prevState.playerAsking]] += 0.5;
+                updatedMatrix[shuffledPlayers[prevState.playerPlaying]] += 1.5;
+                updatedMatrix[shuffledPlayers[prevState.playerAsking]] += 0.5;
                 return { ...prevState, gameMatrix: updatedMatrix };
             });
         } else {
@@ -245,6 +296,9 @@ const GameScreen = ({ navigation, route }) => {
                     </View>
 
                     <View style={styles.card}>
+                        {/* <View style={styles.header}>
+                            <Text style={styles.categoryName}>{gameState.actionPlaying}</Text>
+                        </View> */}
                         <View style={styles.content}>
                             <Text style={styles.title1}>{gameState.challenge}</Text>
                         </View>
@@ -269,10 +323,10 @@ const GameScreen = ({ navigation, route }) => {
                         <AwaitsTapModal
                             visible={gameState.awaitModalVisible}
                             onTap={uponBuzzerTap}
-                            playerName={playerNames[gameState.playerPlaying]}
+                            playerName={shuffledPlayers[gameState.playerPlaying]}
                             action={moves[gameState.actionPlaying]}
                             categoryName={gameState.categoryName}
-                            playerAsking={playerNames[gameState.playerAsking]}
+                            playerAsking={shuffledPlayers[gameState.playerAsking]}
                             currentRound={gameState.currentRound}
                             roundsCount={roundsCount}
                         />
@@ -280,7 +334,7 @@ const GameScreen = ({ navigation, route }) => {
                         <FullScreenModal
                             visible={gameState.modalVisible}
                             onClose={closeModal}
-                            playerName={playerNames[gameState.playerPlaying]}
+                            playerName={shuffledPlayers[gameState.playerPlaying]}
                             currentRound={gameState.currentRound}
                             roundsCount={roundsCount}
                             categoryName={gameState.categoryName}
