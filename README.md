@@ -29,9 +29,9 @@ The player with the most points at the end wins! 🏆
 
 🎨 Screenshots
 
-![Screenshot 1](screenshot-from-2025-02-25-09-45-43.png)
-![Screenshot 2](screenshot-from-2025-02-25-09-45-52.png)
-![Screenshot 3](screenshot-from-2025-02-25-09-46-56.png)
+![Screenshot 1](Screenshot-from-2025-02-25-09-45-43.png)
+![Screenshot 2](Screenshot-from-2025-02-25-09-45-52.png)
+![Screenshot 3](Screenshot-from-2025-02-25-09-46-56.png)
 
 📜 License
 
