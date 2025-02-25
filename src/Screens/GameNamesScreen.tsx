@@ -32,7 +32,7 @@ function GameNamesScreen({ route, navigation }) {
     const moveToGame = () => {
         if (!players.includes('')) {
             navigation.navigate('Game', {
-                playerNames: players,
+                playerNames: players.map(player => player.trim()),
                 roundsCount,
                 seconds,
             });
@@ -47,7 +47,7 @@ function GameNamesScreen({ route, navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
             <ScrollView contentContainerStyle={styles.content}>
                 <Text style={styles.h1}>Επιλέξτε Username</Text>
                 {players.map((player, index) => (

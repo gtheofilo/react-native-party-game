@@ -35,7 +35,7 @@ function Buzzer({ onPress, countdown }) {
     };
 
     return (
-        <Animated.View>
+        <Animated.View style={styles.main}>
             <TouchableOpacity style={[styles.buzzer, { transform: [{ scale: scaleValue }] }]}
                 activeOpacity={0.8}
                 onPressIn={handlePressIn}
@@ -56,16 +56,16 @@ function Buzzer({ onPress, countdown }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    main: {
+        flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     buzzer: {
         backgroundColor: '#E63946',
         borderColor: 'white',
-        borderRadius: hp('100%'), // Make it circular
-        width: wp('40%'),
-        height: hp('20%'),
+        borderRadius: hp('100%'), 
+        width: wp('30%'),
+        height: hp('15%'),
         justifyContent: 'center',
         alignItems: 'center',
         shadowColor: '#000',

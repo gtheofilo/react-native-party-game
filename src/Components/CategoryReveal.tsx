@@ -45,7 +45,7 @@ const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) =>
                 <RandomTextReveal
                     text={categoryName}
                     revealSpeed={200}
-                    scrambleSpeed={50}
+                    scrambleSpeed={10}
                     iterations={5}
                 />
                 <Animated.View style={[styles.fadingContainer, { opacity: fadeAnim }]}>
@@ -53,7 +53,7 @@ const CategoryReveal = ({ visible, onTap, categoryName = "1", currentRound }) =>
                     <Text style={styles.h2}>Πατήστε εδώ για συνέχεια</Text>
                 </Animated.View>
             </TouchableOpacity>
-            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
 
         </Modal>
     );

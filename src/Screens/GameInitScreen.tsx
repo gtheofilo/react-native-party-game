@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     SafeAreaView,
     Pressable,
@@ -41,11 +41,14 @@ function GameInitScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <BannerAd
-                unitId={adUnitId} // Set Ad Unit ID
-                size={BannerAdSize.FULL_BANNER}
+                unitId={adUnitId}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             />
-            <View style={styles.content}>
+            <View style={styles.topSection}>
                 <Text style={styles.h1}>Ρυθμίσεις Παιχνιδιού</Text>
+
+            </View>
+            <View style={styles.midSection}>
 
                 <OptionList
                     label="Αριθμός Παιχτών"
@@ -66,8 +69,17 @@ function GameInitScreen({ navigation }) {
                     onChange={value => handleChange('seconds', value)}
                 />
 
-                <Pressable style={styles.btn} onPress={handleNavigate}>
-                    <Text style={styles.btnText}>Επόμενο</Text>
+
+            </View>
+            <View style={styles.bottomSection}>
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.btn,
+                        { borderBottomWidth: pressed ? hp('0%') : hp('1%') },
+                    ]}
+                    onPress={handleNavigate}
+                >
+                    <Text style={styles.btnText}>ΕΠΟΜΕΝΟ</Text>
                 </Pressable>
             </View>
         </SafeAreaView>
@@ -88,11 +100,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    content: {
-        flex: 1,
+    topSection: {
+        flex: 1, // 1/5 of the total height
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    midSection: {
+        flex: 3, // 3/5 of the total height
+        alignItems: 'center',
         rowGap: hp('5%'),
+    },
+    bottomSection: {
+        flex: 1, // 1/5 of the total height
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     h1: {
         fontWeight: 'bold',
@@ -109,15 +130,13 @@ const styles = StyleSheet.create({
         rowGap: hp('1%'),
     },
     btn: {
-        marginTop: 'auto',
-        backgroundColor: '#E63946',
+        backgroundColor: '#e63946',
         paddingVertical: hp('2%'),
-        borderRadius: hp('2%'),
+        borderRadius: hp('1%'),
         width: wp('70%'),
         alignItems: 'center',
         marginBottom: hp('2%'),
-        borderColor: '#fff',
-        borderWidth: hp('0.5%'),
+        borderColor: '#94242D',
         elevation: 5,
     },
     btnText: {

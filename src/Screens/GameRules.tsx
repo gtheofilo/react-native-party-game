@@ -23,10 +23,10 @@ function GameRules({ navigation }) {
         <SafeAreaView style={styles.container}>
             <BannerAd
                 unitId={adUnitId} // Set Ad Unit ID
-                size={BannerAdSize.FULL_BANNER}
+                size={BannerAdSize.INLINE_ADAPTIVE_BANNER}
 
             />
-            <View style={[styles.content]}>
+            <View style={styles.content}>
                 <Text style={styles.textHeader}>Κανόνες Παιχνιδιού</Text>
                 <Text style={styles.text}>
                     Αφού επιλέξετε τις ρυθμίσεις του παιχνιδιού (αριθμός παικτών, γύρων και διάρκεια της κάθε δοκιμασίας), το παιχνίδι ξεκινάει!
@@ -37,9 +37,9 @@ function GameRules({ navigation }) {
                 <Text style={styles.text}>Υπάρχουν τρεις τρόποι για την περιγραφή της κάρτας:</Text>
                 <Text style={styles.text}>1. Με παντομίμα, όπου ο παίκτης προσπαθεί να μιμηθεί το περιεχόμενο της κάρτας με κινήσεις.</Text>
                 <Text style={styles.text}>2. Με ήχους, όπου ο παίκτης δημιουργεί ήχους σχετικούς με την κάρτα.</Text>
-                <Text style={styles.text}>3. Με τις απαντήσεις "Ναι", "Όχι", "Περίπου", όπου ο παίκτης που ψάχνει την κάρτα κάνει ερωτήσεις και ο άλλος απαντάει μόνο με αυτές τις τρεις λέξεις.</Text>
+                <Text style={styles.text}>3. Με τις απαντήσεις "Ναι", "Όχι", "Περίπου", όπου ο παίκτης που ψάχνει την κάρτα κάνει ερωτήσεις και ο βοηθός απαντάει μόνο με τις τρεις λέξεις.</Text>
                 <Text style={styles.text}>
-                    Η εύρεση της κάρτας επιβραβεύει τον παίχτη που ψάχνει με 1.5 πόντο και αυτόν που περιγράψει με 0.5 πόντο,
+                    Η εύρεση της κάρτας επιβραβεύει τον παίχτη που ψάχνει με 1.5 πόντο και αυτόν που βοηθάει με 0.5 πόντο,
                     ως ένδειξη της καλής τους συνεργασίας.
                 </Text>
                 <Pressable
@@ -79,12 +79,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     content: {
-        padding: hp('1%'),
         flex: 1,
         width: wp('100%'),
         justifyContent: 'center',
         alignItems: 'center',
-        rowGap: hp('2%')
+        rowGap: hp('2%'),
     },
     btn: {
         backgroundColor: '#E63946',

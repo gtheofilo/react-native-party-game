@@ -91,6 +91,7 @@ const GameScreen = ({ navigation, route }) => {
     }, [fadeAnim]);
 
     const gameStart = useCallback(() => {
+        // Creating the score matrix
         const dictionary = playerNames.reduce((acc, name) => ({ ...acc, [name]: 0 }), {});
         setGameState((prevState) => ({
             ...prevState,
@@ -107,6 +108,7 @@ const GameScreen = ({ navigation, route }) => {
         const challengeIndex = Math.floor(Math.random() * data.challenges[selectedCategory][selectedMoveKey].length);
         const selectedChallenge = data.challenges[selectedCategory][selectedMoveKey][challengeIndex];
 
+        // Set the question
         setGameState((prevState) => ({
             ...prevState,
             categoryName: selectedCategory,
@@ -285,34 +287,34 @@ const GameScreen = ({ navigation, route }) => {
                 onPress={handleDoubleTap}
                 activeOpacity={1}
             >
-                <View style={styles.banner}>
-                    <Text style={styles.bannerTitle}>{gameState.categoryName}</Text>
-                    <Text style={styles.h1}>Γύρος {gameState.currentRound} από {roundsCount}</Text>
-                </View>
-                <View style={styles.main}>
-                    <View style={styles.time}>
-                        <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
-                        <Text style={styles.title12}>{gameState.timeLeft}</Text>
-                    </View>
 
-                    <View style={styles.card}>
-                        {/* <View style={styles.header}>
-                            <Text style={styles.categoryName}>{gameState.actionPlaying}</Text>
-                        </View> */}
-                        <View style={styles.content}>
-                            <Text style={styles.title1}>{gameState.challenge}</Text>
-                        </View>
-                    </View>
-
-                    <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
-                        <FontAwesomeIcon icon={faHandPointer} size={32} />
-                        <Text style={styles.title12}>Double-Tap, αν βρέθηκε η λέξη</Text>
-                    </Animated.View>
-
-                </View>
 
                 {!gameState.isLoading && (
                     <>
+                            <View style={styles.banner}>
+                                <Text style={styles.bannerTitle}>{gameState.categoryName}</Text>
+                                <Text style={styles.h1}>Γύρος {gameState.currentRound} από {roundsCount}</Text>
+                            </View>
+                            <View style={styles.main}>
+                                <View style={styles.time}>
+                                    <FontAwesomeIcon icon={faHourglass} size={32} color="#E63946" />
+                                    <Text style={styles.title12}>{gameState.timeLeft}</Text>
+                                </View>
+
+                                <View style={styles.description}>
+                                    <View style={styles.header}>
+                                        <Text style={styles.categoryName}>{moves[gameState.actionPlaying]}</Text>
+                                    </View>
+                                    <Text style={styles.hint}>{gameState.challenge}</Text>
+                                </View>
+
+                                <Animated.View style={{ ...styles.time, opacity: fadeAnim, marginBottom: hp('5%') }}>
+                                    <FontAwesomeIcon icon={faHandPointer} size={32} />
+                                    <Text style={styles.title12}>Double-Tap, αν βρέθηκε η λέξη</Text>
+                                </Animated.View>
+
+                            </View>
+
                         <CategoryReveal
                             visible={gameState.categoryModalVisible}
                             onTap={uponCategoryReveal}
@@ -353,7 +355,7 @@ const GameScreen = ({ navigation, route }) => {
 
 
             </TouchableOpacity>
-            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
         </View>
     );
 };
@@ -364,6 +366,31 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: wp('80%'),
         flex: 2,
+    },
+    description: {
+        flex: 1,
+        borderWidth: hp('1%'),
+        alignItems: 'center',
+        borderRadius: hp('3%'),
+        borderColor: '#457b9d',
+    },
+    hint: {
+        fontSize: hp('3%'),
+        fontWeight: 'bold',
+        marginTop: hp('1%'),
+        textAlign: 'center',
+        padding: hp('1%')
+    },
+    categoryName: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: hp('3.5%'),
+        fontStyle: 'italic'
+    },
+    header: {
+        backgroundColor: '#457b9d',
+        width: '100%',
+        padding: hp('1%'),
     },
     content: {
         backgroundColor: '#457b9d',
@@ -383,6 +410,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E63946',
         width: wp('100%'),
         alignItems: 'center',
+        justifyItems: 'center',
         padding: hp('1.5%'),
     },
     time: {
@@ -390,6 +418,7 @@ const styles = StyleSheet.create({
         padding: hp('1%'),
         rowGap: hp('2%'),
         marginTop: hp('2%'),
+        flex: 1
     },
     title1: {
         fontSize: hp('4%'),

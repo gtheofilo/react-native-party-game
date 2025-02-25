@@ -22,10 +22,10 @@ const funnyQuotes = [
 const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, playerAsking, currentRound, roundsCount }) => {
     const [countdown, setCountdown] = useState(3);
     const [beginCountDown, setBeginCountDown] = useState(false);
+    const [countDownFinished, setCountDownFinished] = useState(-1)
     const intervalId = useRef(null);
     const { playSound } = useSound();
     const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-2209521706517983/4199716068'; // Replace with your actual Ad Unit ID for production
-
 
 
     useEffect(() => {
@@ -36,21 +36,26 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                         playSound("beep");
                         return prevCountdown - 1;
                     } else {
-                        clearInterval(intervalId.current);
                         setBeginCountDown(false);
-                        setCountdown(3);
-                        onTap();
-                        return prevCountdown;
+                        setCountDownFinished((prev) => prev + 1)
+                        clearInterval(intervalId.current);
+                        return 3
                     }
                 });
             }, 1000);
-        }
+        } 
     
         return () => clearInterval(intervalId.current);
     }, [beginCountDown]);
+
+    // useEffect(() => {
+    //     console.log(countdown)
+    // }, [countdown])
     
-
-
+    useEffect(() => {
+        onTap()
+    }, [countDownFinished])
+    
     const startCountDown = () => {
         setBeginCountDown(true)
     };
@@ -88,13 +93,12 @@ const AwaitsTapModal = ({ visible, onTap, playerName, action, categoryName, play
                         Μην χρησιμοποιήσεις λέξεις αλλά μόνο ήχους.
                     </Text>}
                 </View>
-
+                
                 <Buzzer onPress={startCountDown} countdown={countdown}></Buzzer>
-                <View style={[{ height: hp('1%') }]}></View>
             </View>
             <BannerAd
                 unitId={adUnitId} // Set Ad Unit ID
-                size={BannerAdSize.FULL_BANNER}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
 
             />
         </Modal>
@@ -120,13 +124,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     card: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: hp('5%'),
+        // marginTop: hp('5%'),
         rowGap: wp('5%'),
         width: wp('90%'),
     },
     description: {
+        flex: 1,
         width: '80%',
         borderWidth: hp('1%'),
         alignItems: 'center',

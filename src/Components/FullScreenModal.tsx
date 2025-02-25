@@ -24,13 +24,14 @@ const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, category
                 <Text style={styles.bannerTitle}>{categoryName}</Text>
                 <Text style={styles.h1}>Γύρος {currentRound} από {roundsCount}</Text>
             </View>
-            
+
 
             <View style={styles.container}>
 
                 <View style={styles.col}>
+                    <Text>Η κάρτα δεν βρέθηκε από τον παίχτη &. Υπάρχει η δυνατότητα να την κλέψουν οι υπόλοιποι.</Text>
 
-                    <Text style={styles.finished}>Βρήκες την κάρτα;</Text>
+                    {/* <Text style={styles.finished}>Την βρήκες;</Text>
                     <View style={[{ flexDirection: 'row', columnGap: wp('3%') },]}>
 
                         <TouchableOpacity style={styles.yes} onPress={() => { onClose(1) }}>
@@ -40,11 +41,12 @@ const FullScreenModal = ({ visible, onClose, currentRound, roundsCount, category
                         <TouchableOpacity style={styles.no} onPress={() => { onClose(0) }}>
                             <Text style={styles.closeButtonText}>ΟΧΙ</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
 
                 </View>
+
             </View>
-            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
 
         </Modal>
     );
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         flex: 1,
+        backgroundColor: '#232b2b'
     },
     quote: {
         fontFamily: 'Mynerve-Regular',

@@ -22,7 +22,7 @@ const StatsModal = ({ visible, gameMatrix, navigation }) => {
 
     return (
         <Modal visible={visible}>
-            <BannerAd unitId={adUnitId} size={BannerAdSize.FULL_BANNER} />
+            <BannerAd unitId={adUnitId} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
 
             <View style={styles.container}>
 
