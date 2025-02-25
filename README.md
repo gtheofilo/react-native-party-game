@@ -1,84 +1,35 @@
-<<<<<<< HEAD
-# react-native-party-game
-A React Native Party Game
-=======
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+🎉 Party Game - The Ultimate Guessing React Native Game!
 
-# Getting Started
+I created this game to be a portable board game that I could always have in my pocket. The idea was to make something fun and easy for team and family gatherings, with almost no learning curve.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+🕹 How to Play
 
-## Step 1: Start the Metro Server
+Each round, a player will receive a category and must describe it using one of the following methods:
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+🔹 Mimicking - Act it out without using words! 🎭
 
-To start Metro, run the following command from the _root_ of your React Native project:
+🔹 Sounds Only - Make noises to help the others guess! 🔊
 
-```bash
-# using npm
-npm start
+🔹 Yes or No Questions - Answer questions from the group with only "Yes" or "No" 🤔
 
-# OR using Yarn
-yarn start
-```
+If another player guesses correctly, both the describer and the guesser earn points! 🎯
 
-## Step 2: Start your Application
+👥 Players & Gameplay
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Designed for 2 to 10 players
 
-### For Android
+Take turns being the describer
 
-```bash
-# using npm
-npm run android
+The guesser has 60 seconds to find the correct word/phrase.
 
-# OR using Yarn
-yarn android
-```
+The player with the most points at the end wins! 🏆
 
-### For iOS
+🎨 Screenshots
 
-```bash
-# using npm
-npm run ios
+![Screenshot 1](assets/screenshot-from-2025-02-25-09-45-43.png)
+![Screenshot 2](assets/screenshot-from-2025-02-25-09-45-52.png)
+![Screenshot 3](assets/screenshot-from-2025-02-25-09-46-56.png)
 
-# OR using Yarn
-yarn ios
-```
+📜 License
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
->>>>>>> fc45d2e (Initial commit)
+This project is licensed under the MIT License.
